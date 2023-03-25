@@ -1,0 +1,8 @@
+{
+	"jsonrpc":"2.0",
+	"id":1,
+	"method":"load",
+	"params":{
+		"path":"C:/users/me/Documents/Touch/example.toe"
+	}
+}
