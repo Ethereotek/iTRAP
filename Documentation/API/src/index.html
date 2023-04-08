@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script src="scripts.js"></script>
+	<!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+	<script src="C:/Users/white/AppData/Roaming/npm/node_modules/vue/dist/vue.global.js"></script>
+	<title>iTRAP API</title>
+</head>
+
+<body>
+	<h1>iTRAP - Interface for Touch Remote Application Programming</h1>
+	<section id="app">
+		<h1>Endpoints</h1>
+		<div class="metrics">
+			<button type="button" class="collapsible" onclick="collapse(this)">&plus; APPLICATION</button>
+			<div class="content">
+				<div class="metrics-endpoints" v-for="endpoint in api.app">
+					<div class="endpoint">
+						<button type="button" class="http-method" :class="endpoint.button_class" v-text="endpoint.method"></button>
+						<p v-text="endpoint.uri" class="endpoint"> </p>
+					</div>
+				</div>
+			</div>
+			<button type="button" class="collapsible" onclick="collapse(this)">&plus; PROJECT</button>
+			<div class="content">
+				<div class="metrics-endpoints" v-for="endpoint in api.project">
+					<div class="endpoint">
+						<button type="button" class="http-method" :class="endpoint.button_class" v-text="endpoint.method"></button>
+						<p v-text="endpoint.uri" class="endpoint"> </p>
+					</div>
+				</div>
+			</div>
+			<button type="button" class="collapsible" onclick="collapse(this)">&plus; OPERATORS & PARAMETERS</button>
+			<div class="content">
+				<div class="metrics-endpoints" v-for="endpoint in api.op">
+					<div class="endpoint">
+						<button type="button" class="http-method" :class="endpoint.button_class" v-text="endpoint.method"></button>
+						<p v-text="endpoint.uri" class="endpoint"> </p>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+		</div>
+	</section>
+
+
+	<script>
+		const iTAT = {
+			data() {
+				return {
+					api: {
+						"app": [
+							{
+								"method": "GET",
+								"uri": "/app/architecture",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method": "GET",
+								"uri": "/app/build",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method": "GET",
+								"uri": "/app/launchTime",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method": "GET",
+								"uri": "/app/launchTime",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							}
+						],
+						"project": [
+							{
+								"method":"GET",
+								"uri":"/project/name",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/saveVersion",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/saveBuild",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/saveTime",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/saveOSName",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/saveOSVersion",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/cookRate",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"POST",
+								"uri":"/project/cookRate",
+								"button_class":"http-post",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/paths",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/paths",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},
+							{
+								"method":"GET",
+								"uri":"/project/paths",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							}
+						],
+						"op": [
+							{
+								"method":"GET",
+								"uri":"/op/:op_name/:attribute_name",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							},							{
+								"method":"GET",
+								"uri":"/op/:op_name/par/:par_name",
+								"button_class":"http-get",
+								"parameters":"",
+								"response":"",
+								"example":"",
+								"description":""
+							}
+						]
+					}
+				}
+			}
+		}
+
+		window.app = Vue.createApp(iTAT).mount("#app")
+	</script>
+</body>
+
+</html>
