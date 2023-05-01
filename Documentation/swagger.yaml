@@ -1,0 +1,780 @@
+openapi: 3.0.3
+info:
+  title: iTRAP - Touch Remote API 1.0.0
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_
+    
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:29980/api/v1
+  - url: http://192.168.50.23:29980/api/v1
+tags:
+  - name: application
+    description: ''
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: project
+    description: ''
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+  - name: sys_info
+    description: Operations about user
+  - name: ui
+  - name: monitors
+  - name: operators
+  - name: named operators
+  - name: named parameters
+paths:
+  /app/architecture:
+    get:
+      tags:
+        - application
+      summary: returns the computer architecture
+      description: Update an existing pet by Id
+      operationId: app.architecture
+
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: integer
+                    enum: 
+                      - 64
+                      - 32
+                  links:
+                    type: string
+                    enum: 
+                      - api/app/architecture
+
+        '404':
+          description: Resource Not Found
+        '405':
+          description: Validation exception
+  /app/build:
+    get:
+      tags:
+        - application
+      summary: Returns build version of TouchDesigner application
+      description: ''
+      operationId: app.build
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    default: '2022.32660'
+                  links:
+                    type: string
+                    enum: 
+                      - api/app/build
+
+  /app/launchTime:
+    get:
+      tags:
+        - application
+      summary: Returns timestamp of application's launch
+      description: ''
+      operationId: app.launchTime
+
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: number
+                minimum: 0.0        
+
+        '400':
+          description: Invalid tag value
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /app/osName:
+    get:
+      tags:
+        - application
+      summary: Find pet by ID
+      description: Returns a single pet
+      operationId: app.osName
+
+      responses:
+        '200':
+          description: successful operation
+  /app/power:
+    get:
+      tags:
+        - application
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - application
+      summary: uploads an image
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                    - on
+                    - off
+        
+
+      responses:
+        '200':
+          description: successful operation
+  /app/product:
+    get:
+      tags:
+        - application
+      summary: Returns application product type
+      description: Type of executable the project is running under. Values are 'TouchDesigner', 'TouchPlayer' or 'TouchEngine'.
+      operationId: getAppProduct
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: Application Product
+                  id:
+                    type: string
+                    default: app.product
+                  description:
+                    type: string
+                    default: Type of executable the project is running under.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                        enum:
+                          - TouchDesigner
+                          - TouchPlayer
+                          - TouchEngine
+                      type:
+                        type: string
+                        default: str
+
+  /app/version:
+    get:
+      tags:
+        - application
+      summary: Application version number
+      description: Application version number
+      operationId: getAppVersion
+      
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: Application Version
+                  id:
+                    type: string
+                    default: app.version
+                  description:
+                    type: string
+                    default: Application version number.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                        default: '099'
+                        enum:
+                          - '099'
+                          - '088'
+                          - '077'
+                      type:
+                        type: string
+                        default: str
+
+  /app/play:
+    get:
+      tags:
+        - application
+      summary: Gets the play state of the transport
+      operationId: time.play
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - application
+      summary: Sets the play state of the transport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                play:
+                  type: boolean
+                  
+      responses:
+        '200':
+          description: 'OK'
+  /project/name:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+  /project/saveVersion:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'        
+  /project/saveBuild:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'            
+  /project/saveTime:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'  
+  /project/saveOSName:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK' 
+  /project/saveOSVersion:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'  
+  /project/paths:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'  
+  /project/cookRate:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'  
+          
+  /project/realTime:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+    
+    put:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+  /project/performOnStart:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+    
+    put:
+      tags:
+        - project
+      summary: Set the performOnStart variable
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                performOnStart:
+                  type: boolean
+      responses:
+        '200':
+          description: 'OK'
+          
+  /project/load:
+    post:
+      tags:
+        - project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  default: default.toe
+
+      
+      responses:
+        '200':
+          description: 'OK'
+  /project/save:
+
+    post:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+  /project/quit:
+
+    post:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+  /sys_info/numCPUs:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK'
+  /sys_info/ram:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK' 
+  /sys_info/numMonitors:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK' 
+  /sys_info/xres:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK' 
+  /sys_info/yres:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK'  
+  /sys_info/res:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK' 
+  /sys_info/tfs:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK'
+  /sys_info/MIDIInputs:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK'
+  /sys_info/MIDIOutputs:
+    get:
+      tags:
+        - sys_info
+      responses:
+        '200':
+          description: 'OK' 
+  /ui/masterVolume:
+    get:
+      tags:
+        - ui
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - ui
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                volume:
+                  type: number
+                  minimum: 0.0
+                  maximum: 1.0
+      responses:
+        '200':
+          description: 'OK'
+  /monitors/width:
+    get:
+      tags:
+        - monitors
+      responses:
+        '200':
+          description: 'OK'
+  /monitors/height:
+    get:
+      tags:
+        - monitors
+      responses:
+        '200':
+          description: 'OK'
+  /monitors/numMonitors:
+    get:
+      tags:
+        - monitors
+      responses:
+        '200':
+          description: 'OK'
+  /monitors/refresh:
+    post:
+      tags:
+        - monitors
+      responses:
+        '200':
+          description: 'OK'         
+  /op:
+    get:
+      tags:
+        - operators
+      summary: Get an operator dictionary
+      description: Returns all attributes of an operator as a JSON object; either the absolute path or the id must be provided as a query parameter.
+      parameters:
+        - $ref: '#/components/parameters/QueryParameter'
+        - name: id
+          required: false
+          in: query
+          schema:
+            type: integer
+          description: Unique integer ID; not consistent between file loads or copy/paste operations
+        
+      responses:
+        '200':
+          description: 'OK'
+    post:
+      tags:
+        - operators
+      summary: Create an operator
+      parameters:
+        - name: name
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: parent
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+    delete:
+      tags:
+        - operators
+      summary: Destroys an operator
+      responses:
+        '200':
+          description: 'OK'
+  /op/attribute:
+    get:
+      tags:
+        - operators
+      summary: Get operator
+      parameters:
+        - name: path
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: attribute
+          required: false
+          in: query
+          schema:
+            type: string
+        
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - operators
+      parameters:
+        - name: path
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: attribute
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+  /op/valid:
+    get:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+  /op/id:
+    get:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+  /op/name:
+    get:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+  /op/path:
+    get:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+          
+  /op/storage:
+    get:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+  /op/tags:
+    get:
+      tags:
+        - operators
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+        
+      responses:
+        '200':
+          description: 'OK'
+        '404':
+          description: 'Resource Not Found'
+    post:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK' 
+    delete:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+  /op/bypass:
+    get:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - operators
+      responses:
+        '200':
+          description: 'OK' 
+ 
+  /op/par:
+    get:
+      tags:
+        - operators
+      summary: Get operator parameter
+      parameters:
+        - $ref: '#/components/parameters/QueryParameterReq'
+        - name: par
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Name of the parameter to query
+      responses:
+        '200':
+          description: 'OK'
+    put: 
+      tags:
+        - operators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - path
+                - par
+                - val
+              properties:
+                path:
+                  type: string
+                par:
+                  type: string
+                val:
+                  type: string
+
+      responses:
+        '200':
+          description: 'OK'
+  /named_operators:
+    get:
+      tags:
+        - named operators
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  operator_name:
+                    type: string
+                    default: path/to/operator
+               
+      
+          
+          
+  
+components:
+  parameters:
+    QueryParameter:
+      name: path
+      in: query
+      description: Absolute path to the operator
+      required: false
+      schema:
+        type: string
+    QueryParameterReq:
+      name: path
+      in: query
+      description: Absolute path to the operator
+      required: true
+      schema:
+        type: string
+    BodyParameterReq:
+      name: path
+      in: query
+      description: Absolute path to the operator
+      required: true
+      schema:
+        type: string
+        
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
