@@ -193,5 +193,49 @@ schemas = {
             'par',
             'val'
         ]
+    },
+    'get_named_op':{
+        'parameters':{
+            'name':{
+                'type':str
+            }
+        },
+        'required':['name']
+    },
+    'get_named_op_attribute':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'attribute':{
+                'type':str
+            }
+        },
+        'required':['name', 'attribute']
+    },
+    'get_named_op_par':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'par':{
+                'type':str
+            }
+        },
+        'required':['name', 'par']
+    },
+    'put_named_op_attribute':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'attribute':{
+                'type':str
+            },
+            'value':{
+                'type':str
+            }
+        },
+        'required':['name', 'attribute', 'value']
     }
 }

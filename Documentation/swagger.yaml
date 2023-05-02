@@ -48,8 +48,8 @@ paths:
     get:
       tags:
         - application
-      summary: returns the computer architecture
-      description: Update an existing pet by Id
+      summary: Returns the computer architecture
+      description: The architecture of the compile. Generally 32 or 64 bit.
       operationId: app.architecture
 
       responses:
@@ -60,25 +60,35 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: integer
-                    enum: 
-                      - 64
-                      - 32
-                  links:
+                  name: 
                     type: string
-                    enum: 
-                      - api/app/architecture
+                    default: Application Architecture
+                  id: 
+                    type: string
+                    default: app.architecture
+                  description: 
+                    type: string
+                    default: The architecture of the compile. Generally 32 or 64 bit.
+                  built-in:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        enum:
+                          - 64
+                          - 32
+                      type:
+                        type: string
+                        enum:
+                          - int
 
-        '404':
-          description: Resource Not Found
-        '405':
-          description: Validation exception
   /app/build:
     get:
       tags:
         - application
-      summary: Returns build version of TouchDesigner application
+      summary: Returns build number of TouchDesigner application
       description: ''
       operationId: app.build
 
@@ -102,8 +112,8 @@ paths:
     get:
       tags:
         - application
-      summary: Returns timestamp of application's launch
-      description: ''
+      summary: Returns time to start .toe fil
+      description: Total time required to launch and begin playing the toe file, measured in seconds
       operationId: app.launchTime
 
 
@@ -113,15 +123,27 @@ paths:
           content:
             application/json:
               schema:
-                type: number
-                minimum: 0.0        
+                type: object
+                properties:
+                  name: 
+                    type: string
+                  id:
+                    type: string
+                  description: 
+                    type: string
+                  built-in:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: number
+                        minimum: 0.0
+                      type:
+                        type: string
+                        
 
-        '400':
-          description: Invalid tag value
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
+
   /app/osName:
     get:
       tags:
@@ -598,13 +620,7 @@ paths:
       responses:
         '200':
           description: 'OK'
-  /op/valid:
-    get:
-      tags:
-        - operators
-      responses:
-        '200':
-          description: 'OK'
+
   /op/id:
     get:
       tags:
@@ -632,7 +648,6 @@ paths:
       responses:
         '200':
           description: 'OK'
-          
   /op/storage:
     get:
       tags:
@@ -681,7 +696,6 @@ paths:
       responses:
         '200':
           description: 'OK' 
- 
   /op/par:
     get:
       tags:
@@ -721,7 +735,8 @@ paths:
       responses:
         '200':
           description: 'OK'
-  /named_operators:
+  
+  /namedOps:
     get:
       tags:
         - named operators
@@ -736,11 +751,112 @@ paths:
                   operator_name:
                     type: string
                     default: path/to/operator
-               
-      
-          
-          
-  
+  /namedOp/{name}:
+    get:
+      tags:
+        - named operators
+      parameters:
+        - name: name
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+  /namedOp/{name}/attribute/{attribute}:
+    get:
+      tags:
+        - named operators
+      parameters:
+        - name: name
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: attribute
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'OK'
+
+    put:
+      tags:
+        - named operators
+      parameters:
+        - name: name
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: attribute
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: value
+          in: query
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'OK'
+  /namedOp/{name}/par/{par}:
+    get:
+      tags:
+        - named operators
+      parameters:
+        - name: name
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: par
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          'description': 'OK'
+        '404':
+          'description': 'Resource Not Found'
+        
+  /namedPars:
+    get:
+      tags:
+        - named parameters
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    par_name:
+                      type: string
+                      default: some_par
+                    owner:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          default: path/to/owner
+                        id:
+                          type: number
+                          default: 1234
+            
 components:
   parameters:
     QueryParameter:

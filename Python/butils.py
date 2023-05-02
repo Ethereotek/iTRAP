@@ -30,3 +30,6 @@ def validateParameters(pars: dict, schema):
 				validType = validType and (expected_type == type(val))
 
 	return hasRequired, validType
+
+def jsonifyOp(operator):
+	pass

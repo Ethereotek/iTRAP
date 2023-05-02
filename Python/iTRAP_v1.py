@@ -1,29 +1,7 @@
 import json
-import socket
 from functools import wraps
 schemas = mod('schemas').schemas
 ttree = mod('ttree_builder')
-
-
-def TestHandler(func):
-	def wrapper(*args, **kwargs):
-		request = kwargs['request'],
-		parameters = kwargs['parameters']
-		data = json.loads(request['data'])
-		params = data.get('params')
-		schema = kwargs.get('schema')
-		if not params:
-			params = parameters
-
-		schema = schemas[schema]
-		hasParams, validTypes = validateParameters(data, schema)
-
-		if hasParams and validTypes:
-			func(*args, **kwargs)
-		else:
-			formatResponse(400, 'Bad Request', {})
-	return wrapper
-
 
 class ITRAP():
 	routing_table = {}
@@ -33,70 +11,17 @@ class ITRAP():
 		self.itrap_port = thisComp.par.Port
 		self.ip_address = thisComp.par.Ipaddress
 		print(thisComp)
-		# self.routing_table = {
-		# 	"GET /api/v1/app/architecture": self.getAppArchitecture,
-		# 	"GET /api/v1/app/build": self.getAppBuild,
-		# 	"GET /api/v1/app/launchTime": self.getAppLaunchTime,
-		# 	"GET /api/v1/app/startTimestamp":self.getAppStartTimestamp,
-		# 	"GET /api/v1/app/osName": self.getAppOSName,
-		# 	"GET /api/v1/app/power": self.getAppPower,
-		# 	"PUT /api/v1/app/power": [self.putAppPowerN, schemas['put_app_power']],
-		# 	"GET /api/v1/app/product": self.getAppProduct,
-		# 	"GET /api/v1/app/version": self.getAppVersion,
-		# 	"GET /api/v1/app/play": self.getAppPlay,
-		# 	"PUT /api/v1/app/play": self.putAppPlay,
-		# 	"GET /api/v1/project/name": self.getProjectName,
-		# 	"GET /api/v1/project/saveVersion": self.getProjectSaveVersion,
-		# 	"GET /api/v1/project/saveBuild": self.getProjectSaveBuild,
-		# 	"GET /api/v1/project/saveTime": self.getProjectSaveTime,
-		# 	"GET /api/v1/project/saveOSName": self.getProjectSaveOSName,
-		# 	"GET /api/v1/project/saveOSVersion": self.getProjectSaveOSVersion,
-		# 	"GET /api/v1/project/paths": self.getProjectPaths,
-		# 	"GET /api/v1/project/cookRate": self.getProjectCookRate,
-		# 	"PUT /api/v1/project/cookRate": self.putProjectCookRate,
-		# 	"GET /api/v1/project/realTime": self.getProjectRealTime,
-		# 	"PUT /api/v1/project/realTime": self.putProjectRealTime,
-		# 	"GET /api/v1/project/performOnStart": self.getProjectPerformOnStart,
-		# 	"PUT /api/v1/project/performOnStart": self.putProjectPerformOnStart,
-		# 	"POST /api/v1/project/load": self.postProjectLoad,
-		# 	"POST /api/v1/project/save": self.postProjectSave,
-		# 	"POST /api/v1/project/quit": self.postProjectQuit,
-		# 	"GET /api/v1/sysinfo/numCPUs": self.getSysInfoNumCpus,
-		# 	"GET /api/v1/sysinfo/ram": self.getSysInfoRAM,
-		# 	"GET /api/v1/ui/masterVolume": self.getUIMasterVolume,
-		# 	"PUT /api/v1/ui/masterVolume": self.putUIMasterVolume,
-		# 	"GET /api/v1/monitors": self.getMonitors,
-		# 	"POST /api/v1/monitors/refresh": self.postMonitorsRefresh,
-		# 	"GET /api/v1/op": self.getOp,
-		# 	"POST /api/v1/op": self.postOp,
-		# 	"DELETE /api/v1/op": self.deleteOp,
-		# 	"GET /api/v1/op/opIdMap": self.getOpIdMap,
-		# 	"GET /api/v1/op/id": self.getOpID,
-		# 	"GET /api/v1/op/name": self.getOpName,
-		# 	"PUT /api/v1/op/name": self.putOpName,
-		# 	"GET /api/v1/op/storage": self.getOpStorage,
-		# 	"GET /api/v1/op/tags": self.getOpTags,
-		# 	"POST /api/v1/op/tags": self.postOpTags,
-		# 	"DELETE /api/v1/op/tags": self.deleteOpTags,
-		# 	"GET /api/v1/op/par": self.getOpPar,
-		# 	"PUT /api/v1/op/par": self.putOpPar,
-		# }
+
 		self.routing_table = {
 			"/api/v1/app/architecture": {'GET': self.getAppArchitecture},
 			"/api/v1/app/build": {'GET': self.getAppBuild},
 			"/api/v1/app/launchTime": {'GET': self.getAppLaunchTime},
 			"/api/v1/app/startTimestamp": {'GET': self.getAppStartTimestamp},
 			"/api/v1/app/osName": {'GET': self.getAppOSName},
-			"/api/v1/app/power": {
-				'GET': self.getAppPower,
-				'PUT': self.putAppPower
-			},
-
+			"/api/v1/app/power": {'GET': self.getAppPower,'PUT': self.putAppPower},
 			"/api/v1/app/product": {'GET': self.getAppProduct},
 			"/api/v1/app/version": {'GET': self.getAppVersion},
-			"/api/v1/app/play": {'GET': self.getAppPlay,
-								 'PUT': self.putAppPlay},
-
+			"/api/v1/app/play": {'GET': self.getAppPlay,'PUT': self.putAppPlay},
 			"/api/v1/project/name": {'GET': self.getProjectName},
 			"/api/v1/project/saveVersion": {'GET': self.getProjectSaveVersion},
 			"/api/v1/project/saveBuild": {'GET': self.getProjectSaveBuild},
@@ -104,21 +29,15 @@ class ITRAP():
 			"/api/v1/project/saveOSName": {'GET': self.getProjectSaveOSName},
 			"/api/v1/project/saveOSVersion": {'GET': self.getProjectSaveOSVersion},
 			"/api/v1/project/paths": {'GET': self.getProjectPaths},
-			"/api/v1/project/cookRate": {'GET': self.getProjectCookRate,
-										 'PUT': self.putProjectCookRate},
-
-			"/api/v1/project/realTime": {'GET': self.getProjectRealTime,
-										 'PUT': self.putProjectRealTime},
-
+			"/api/v1/project/cookRate": {'GET': self.getProjectCookRate,'PUT': self.putProjectCookRate},
+			"/api/v1/project/realTime": {'GET': self.getProjectRealTime,'PUT': self.putProjectRealTime},
 			"/api/v1/project/performOnStart": {'GET': self.getProjectPerformOnStart, 'PUT': self.putProjectPerformOnStart},
 			"/api/v1/project/load": {'POST': self.postProjectLoad},
 			"/api/v1/project/save": {'POST': self.postProjectSave},
 			"/api/v1/project/quit": {'POST': self.postProjectQuit},
 			"/api/v1/sysinfo/numCPUs": {'GET': self.getSysInfoNumCpus},
 			"/api/v1/sysinfo/ram": {'GET': self.getSysInfoRAM},
-			"/api/v1/ui/masterVolume": {'GET': self.getUIMasterVolume,
-										'PUT': self.putUIMasterVolume},
-
+			"/api/v1/ui/masterVolume": {'GET': self.getUIMasterVolume,'PUT': self.putUIMasterVolume},
 			"/api/v1/monitors": {'GET': self.getMonitors},
 			"/api/v1/monitors/refresh": {'POST': self.postMonitorsRefresh},
 			"/api/v1/op": {'GET': self.getOp, 'POST': self.postOp, 'DELETE': self.deleteOp},
@@ -130,14 +49,14 @@ class ITRAP():
 			"/api/v1/op/storage": {'GET': self.getOpStorage},
 			"/api/v1/op/tags": {'GET': self.getOpTags, 'POST': self.postOpTags, 'DELETE': self.deleteOpTags},
 			"/api/v1/op/par": {'GET': self.getOpPar, 'PUT': self.putOpPar},
+			"/api/v1/namedOp/<name>":{'GET':self.getNamedOp},
+			"/api/v1/namedOp/<name>/attribute/<attribute>":{'GET':self.getNamedOpAttribute, 'PUT':self.putNamedOpAttribute},
+			"/api/v1/namedOp/<name>/par/<par>":{'GET':self.getNamedOpPar}
 		}
 
 		for key, val in self.routing_table.items():
 			self.routing_tree.insert(key, val)
-		self.routing_tree.insert('/api/monkey/test/extension', {'GET':self.testHandle})
 
-	def testHandle(self):
-		print('main handler')
 	def handler(thisSchema):
 		def decorator(func):
 			@wraps(func)
@@ -272,6 +191,9 @@ class ITRAP():
 		print(hasRequired, validType)
 		return hasRequired, validType
 
+#--------------------------------------------------------#
+#-------------------- BEGIN HANDLERS --------------------#
+#--------------------------------------------------------#
 	def getAppArchitecture(self):
 		data = {
 			'name': 'Application Architecture',
@@ -783,6 +705,12 @@ class ITRAP():
 
 	def getMonitors(self):
 		monitorsData = []
+		monitorLinks = [{
+			'rel':'self',
+			'href':self.rel_prefix + 'api/banana/monitors'
+
+			}
+		]
 		for m in range(len(monitors)):
 			thisMonitor = {
 				'name': monitors[m].displayName,
@@ -790,6 +718,11 @@ class ITRAP():
 				'index': m
 			}
 			monitorsData.append(thisMonitor)
+			link = self.rel_prefix + f'api/banana/monitors/{m}'
+			monitorLinks.append({
+				'rel':'monitors/monitor',
+				'href':link
+			})
 		data = {
 			'name': 'Monitors',
 			'id': 'monitors',
@@ -798,7 +731,8 @@ class ITRAP():
 			'data': {
 					'value': monitorsData,
 					'type': 'list'
-			}
+			},
+			'links':monitorLinks
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -1092,6 +1026,103 @@ class ITRAP():
 				'success': True
 			}
 		self.formatResponse(200, 'OK', data)
+	
+	@handleGet(schemas['get_named_op'])
+	def getNamedOp(self):
+		params = self.parameters
+		name = params.get('name')
+
+		operator = op.NAPs.Ops(name)
+
+		data = {
+			'success': True
+		}
+		self.formatResponse(200, 'OK', data)
+
+	@handleGet(schemas['get_named_op_attribute'])
+	def getNamedOpAttribute(self):
+		params = self.parameters
+		name = params.get('name')
+		attribute = params.get('attribute')
+
+		operator = op.NAPs.Ops(name)
+		attributeVal = getattr(operator, attribute)
+
+		data = {
+			'name':'Operator Attribute',
+			'id':'op.attribs',
+			'description':'',
+			'built-in':False,
+			'data':{
+				'value':attributeVal,
+				'type':type(attributeVal).__name__
+			}
+		}
+
+		self.formatResponse(200, 'OK', data)
+	
+	@handleGet(schemas['put_named_op_attribute'])
+	def putNamedOpAttribute(self):
+		params = self.parameters
+		name = params.get('name')
+		attribute = params.get('attribute')
+		value = params.get('value')
+
+		operator = op.NAPs.Ops(name)
+		_type = type(getattr(operator, attribute))
+		try: 
+			value = _type(value)
+			setattr(operator, attribute, value)
+			data = {
+				'name':'Operator Attribute',
+				'id':'NAPs.Ops.attr',
+				'description':'',
+				'data':{
+					'success':True
+				}
+			}
+			self.formatResponse(200, 'OK', data)
+		except Exception as e:
+			if e == ValueError:
+				data = {
+					'error':{
+						'message':'ValueError: Value could not be coerced to the Attribute\'s type'
+					}
+				}
+			elif e == AttributeError:
+				data = {
+					'error':{
+						'message':'AttributeError: It is likely that the attribute is not writable.'
+					}
+				}
+			else:
+				data = {
+					'error':{
+						'message':'UnknownError'
+					}
+				}
+			self.formatResponse(500, 'Internal Server Error', data)
+
+	@handleGet(schemas['get_named_op_par'])
+	def getNamedOpPar(self):
+		params = self.parameters
+		name = params.get('name')
+		par = params.get('par')
+
+		operator = op.NAPs.Ops(name)
+		parVal = operator.par[par].val
+
+		data = {
+			'name':'Operator Parameter',
+			'id':'NAPs.Ops.par',
+			'description':'',
+			'built-in':False,
+			'data':{
+				'value':parVal,
+				'type':type(parVal).__name__
+			}
+		}
+		self.formatResponse(200, 'OK', data)
 	'''
 	def HandleRequest(self, request, response):
 		self.request = request
@@ -1132,7 +1163,8 @@ class ITRAP():
 		handler, params = self.routing_tree.find(uri, method)
 		print(handler, params)
 		if params:
-			self.parameters = params
+			# self.parameters = params
+			self.parameters.update(params)
 
 		#handler()
 		print('uri')
@@ -1183,6 +1215,3 @@ class ITRAP():
 		self.url = url
 		url = '/api/monkey' + url
 		self.routing_tree.insert(url, handlers)
-
-
-		# no reason to return, because we are passing the self.response dict

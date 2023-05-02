@@ -1,0 +1,1502 @@
+{
+	"info": {
+		"_postman_id": "f2cf028a-4895-48c6-8121-d6bdd747cb1a",
+		"name": "Banana",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27046004"
+	},
+	"item": [
+		{
+			"name": "Application",
+			"item": [
+				{
+					"name": "Application Architecture",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/architecture",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"architecture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Build",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/build",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"build"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Launch Time",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/launchTime",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"launchTime"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Start Timestamp",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/startTimestamp",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"startTimestamp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application OS Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/osName",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"osName"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Power",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/power",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"power"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Application Power",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"state\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/power",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"power"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/product",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Version",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/version",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"version"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Application Transport State",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/play",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"play"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Application Transport State",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"play\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/play",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"app",
+								"play"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Named Operators",
+			"item": [
+				{
+					"name": "Get Named Operator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/test_sphere",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"namedOp",
+								"test_sphere"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Named Operator Attribute",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/test_sphere/attribute/bypass",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"namedOp",
+								"test_sphere",
+								"attribute",
+								"bypass"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Named Operator Parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/test_sphere/par/radx",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"namedOp",
+								"test_sphere",
+								"par",
+								"radx"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Named Operator Attribute",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/const/attribute/bypass?value=True",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"namedOp",
+								"const",
+								"attribute",
+								"bypass"
+							],
+							"query": [
+								{
+									"key": "value",
+									"value": "True"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Operators",
+			"item": [
+				{
+					"name": "Operator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op?path=/project1",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Id Map",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/opIdMap",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"opIdMap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/name?id=5999",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"name"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5999"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Operator Name",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":5999,\r\n    \"name\":\"Newer_Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/name",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Operator",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"my_brand_new_operator\",\r\n    \"parent\":\"/project1\",\r\n    \"type\":\"textDAT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Operator",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":\"/project1/my_brand_new_operator\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/id?path=/project1/test",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"id"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1/test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Storage",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/storage?path=/project1/base2",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"storage"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1/base2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Tags",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/tags?path=/project1/base2",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"tags"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1/base2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Operator Tags",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"new_tag\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/tags",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Operator Tags",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"base\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/tags",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Parameter",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"base\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/par?op-id=5999&par-name=file",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"par"
+							],
+							"query": [
+								{
+									"key": "op-id",
+									"value": "5999"
+								},
+								{
+									"key": "par-name",
+									"value": "file"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Parameter (path pars)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"base\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/id/5999/par/file",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"id",
+								"5999",
+								"par",
+								"file"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Operator Parameter Value",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"base\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/id/6181/par/name0/val/test",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op",
+								"id",
+								"6181",
+								"par",
+								"name0",
+								"val",
+								"test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Monitors",
+			"item": [
+				{
+					"name": "Monitor",
+					"item": []
+				},
+				{
+					"name": "http://{{ip_address}}:29980/api/v1/monitors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/monitors",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"monitors"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "Project Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/name",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Paths",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/name",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Cook Rate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/paths",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"paths"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Cook Rate",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rate\":60\r\n}"
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/cookRate",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"cookRate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Save Version",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/saveVersion",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"saveVersion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Save Build",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/saveBuild",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"saveBuild"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Real Time",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/realTime",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"realTime"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Real Time",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"realTime\":true\r\n}"
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/realTime",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"realTime"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Perform on Start",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/performOnStart",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"performOnStart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Perform on Start",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"performOnStart\":false\r\n}"
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/performOnStart",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"performOnStart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Load Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\":false\r\n}"
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/load",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"load"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n}"
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/save",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Quit Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n}"
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/quit",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"quit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Operator",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"my_new_op\",\r\n    \"type\":\"textDAT\",\r\n    \"parent\":\"/project1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/op",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"op"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update UI Master Volume",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"volume\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/ui/masterVolume",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"ui",
+								"masterVolume"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UI",
+			"item": [
+				{
+					"name": "UI Master Volume",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/ui/masterVolume",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"ui",
+								"masterVolume"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update UI Master Volume",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"volume\":1.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/v1/ui/masterVolume",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"ui",
+								"masterVolume"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Example Extension",
+			"item": [
+				{
+					"name": "Test Custom Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/monkey/test/extension?test=parameter&another=for_good_measure",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"monkey",
+								"test",
+								"extension"
+							],
+							"query": [
+								{
+									"key": "test",
+									"value": "parameter"
+								},
+								{
+									"key": "another",
+									"value": "for_good_measure"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
