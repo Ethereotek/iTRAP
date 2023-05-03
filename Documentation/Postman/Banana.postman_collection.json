@@ -21,7 +21,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/architecture",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/architecture",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -29,7 +29,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"architecture"
 							]
@@ -49,7 +49,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/build",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/build",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -57,7 +57,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"build"
 							]
@@ -71,7 +71,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/launchTime",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/launchTime",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -79,7 +79,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"launchTime"
 							]
@@ -93,7 +93,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/startTimestamp",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/startTimestamp",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -101,7 +101,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"startTimestamp"
 							]
@@ -115,7 +115,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/osName",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/osName",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -123,7 +123,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"osName"
 							]
@@ -137,7 +137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/power",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/power",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -145,7 +145,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"power"
 							]
@@ -168,7 +168,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/power",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/power",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -176,7 +176,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"power"
 							]
@@ -202,7 +202,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/product",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/product",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -210,7 +210,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"product"
 							]
@@ -236,7 +236,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/version",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/version",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -244,7 +244,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"version"
 							]
@@ -276,7 +276,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/play",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/play",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -284,7 +284,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"play"
 							]
@@ -313,7 +313,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/app/play",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/play",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -321,7 +321,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"app",
 								"play"
 							]
@@ -340,7 +340,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/test_sphere",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/test_sphere",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -348,7 +348,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"namedOp",
 								"test_sphere"
 							]
@@ -362,7 +362,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/test_sphere/attribute/bypass",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/test_sphere/attribute/bypass",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -370,7 +370,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"namedOp",
 								"test_sphere",
 								"attribute",
@@ -386,7 +386,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/test_sphere/par/radx",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/test_sphere/par/radx",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -394,7 +394,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"namedOp",
 								"test_sphere",
 								"par",
@@ -410,7 +410,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/namedOp/const/attribute/bypass?value=True",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/const/attribute/bypass?value=True",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -418,7 +418,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"namedOp",
 								"const",
 								"attribute",
@@ -445,7 +445,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op?path=/project1",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op?path=/project1",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -453,7 +453,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op"
 							],
 							"query": [
@@ -472,7 +472,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/opIdMap",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/opIdMap",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -480,7 +480,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"opIdMap"
 							]
@@ -494,7 +494,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/name?id=5999",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/name?id=5999",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -502,7 +502,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"name"
 							],
@@ -531,7 +531,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/name",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/name",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -539,7 +539,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"name"
 							]
@@ -562,7 +562,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -570,7 +570,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op"
 							]
 						}
@@ -592,7 +592,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -600,7 +600,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op"
 							]
 						}
@@ -625,7 +625,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/id?path=/project1/test",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/id?path=/project1/test",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -633,7 +633,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"id"
 							],
@@ -665,7 +665,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/storage?path=/project1/base2",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/storage?path=/project1/base2",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -673,7 +673,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"storage"
 							],
@@ -705,7 +705,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/tags?path=/project1/base2",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/tags?path=/project1/base2",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -713,7 +713,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"tags"
 							],
@@ -742,7 +742,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/tags",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/tags",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -750,7 +750,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"tags"
 							]
@@ -773,7 +773,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/tags",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/tags",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -781,7 +781,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"tags"
 							]
@@ -807,7 +807,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/par?op-id=5999&par-name=file",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/par?op-id=5999&par-name=file",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -815,7 +815,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"par"
 							],
@@ -851,7 +851,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/id/5999/par/file",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/id/5999/par/file",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -859,7 +859,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"id",
 								"5999",
@@ -885,7 +885,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op/id/6181/par/name0/val/test",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/id/6181/par/name0/val/test",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -893,7 +893,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op",
 								"id",
 								"6181",
@@ -916,12 +916,12 @@
 					"item": []
 				},
 				{
-					"name": "http://{{ip_address}}:29980/api/v1/monitors",
+					"name": "http://{{ip_address}}:29980/api/banana/monitors",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/monitors",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/monitors",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -929,7 +929,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"monitors"
 							]
 						}
@@ -947,7 +947,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/name",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/name",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -955,7 +955,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"name"
 							]
@@ -969,7 +969,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/name",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/name",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -977,7 +977,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"name"
 							]
@@ -991,7 +991,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/paths",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/paths",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -999,7 +999,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"paths"
 							]
@@ -1023,7 +1023,7 @@
 							"raw": "{\r\n    \"rate\":60\r\n}"
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/cookRate",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/cookRate",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1031,7 +1031,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"cookRate"
 							]
@@ -1058,7 +1058,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/saveVersion",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/saveVersion",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1066,7 +1066,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"saveVersion"
 							]
@@ -1093,7 +1093,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/saveBuild",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/saveBuild",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1101,7 +1101,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"saveBuild"
 							]
@@ -1128,7 +1128,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/realTime",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/realTime",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1136,7 +1136,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"realTime"
 							]
@@ -1160,7 +1160,7 @@
 							"raw": "{\r\n    \"realTime\":true\r\n}"
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/realTime",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/realTime",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1168,7 +1168,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"realTime"
 							]
@@ -1189,7 +1189,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/performOnStart",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/performOnStart",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1197,7 +1197,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"performOnStart"
 							]
@@ -1221,7 +1221,7 @@
 							"raw": "{\r\n    \"performOnStart\":false\r\n}"
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/performOnStart",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/performOnStart",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1229,7 +1229,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"performOnStart"
 							]
@@ -1253,7 +1253,7 @@
 							"raw": "{\r\n    \"path\":false\r\n}"
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/load",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/load",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1261,7 +1261,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"load"
 							]
@@ -1285,7 +1285,7 @@
 							"raw": "{\r\n}"
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/save",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/save",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1293,7 +1293,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"save"
 							]
@@ -1317,7 +1317,7 @@
 							"raw": "{\r\n}"
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/project/quit",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/quit",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1325,7 +1325,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"project",
 								"quit"
 							]
@@ -1348,7 +1348,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/op",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1356,7 +1356,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"op"
 							],
 							"query": [
@@ -1385,7 +1385,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/ui/masterVolume",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/ui/masterVolume",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1393,7 +1393,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"ui",
 								"masterVolume"
 							]
@@ -1412,7 +1412,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/ui/masterVolume",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/ui/masterVolume",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1420,7 +1420,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"ui",
 								"masterVolume"
 							]
@@ -1443,7 +1443,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/v1/ui/masterVolume",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/ui/masterVolume",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1451,7 +1451,7 @@
 							"port": "{{port}}",
 							"path": [
 								"api",
-								"v1",
+								"banana",
 								"ui",
 								"masterVolume"
 							]

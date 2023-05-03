@@ -1,0 +1,14 @@
+{
+  "admin": {
+    "scopes": [
+      "app.*",
+      "project.*",
+      "namedOp.*",
+      "monitors.*",
+      "project.*",
+      "ui.*",
+      "namedPars.*"
+    ],
+    "key": "ec3c304e-e937-11ed-8bc6-9cfce837ddb7"
+  }
+}

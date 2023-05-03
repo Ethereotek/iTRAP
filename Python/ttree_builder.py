@@ -1,5 +1,6 @@
 import re
 
+
 class TrieNode:
 	def __init__(self):
 		self.name = 'root'
@@ -7,6 +8,7 @@ class TrieNode:
 		self.handlers = None
 		self.param_name = None
 		self.end = False
+		self.scope = 'root'
 	
 class Trie:
 	param_pattern = re.compile("\\w+(?=>)")
@@ -14,7 +16,7 @@ class Trie:
 	def __init__(self):
 		self.root = TrieNode()
 
-	def insert(self, path: str, handlers: dict) -> None:
+	def insert(self, path: str, handlers: dict, scope: str) -> None:
 		node = self.root
 		path = path.strip('/')
 
@@ -42,6 +44,8 @@ class Trie:
 		
 			# after all segments have been cycled through, add handlers
 		node.handlers = handlers
+		node.scope = scope
+
 		# print(node.handlers)
 	def find(self, path: str, method: str):
 		node = self.root
@@ -60,8 +64,13 @@ class Trie:
 					
 				elif segment in node.children:
 					node = node.children[segment]
+				else:
+					return None, {}, ''
+			
 			numSegments -= 1
-		return node.handlers.get(method), params
+
+
+		return node.handlers.get(method), params, node.scope
 
 
 
