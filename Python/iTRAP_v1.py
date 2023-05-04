@@ -1,13 +1,13 @@
 import json
 from functools import wraps
+
 schemas = mod('schemas').schemas
 ttree = mod('ttree_builder')
 permissions = mod('Permissions')
+request_validation = mod('request_validation')
+
 permissions_config_dat = op('permissions_config')
 permissions_config = json.loads(permissions_config_dat.text)
-
-
-
 
 class ITRAP():
 	routing_table = {}
@@ -69,8 +69,9 @@ class ITRAP():
 			scope = val.get('scope')
 			self.routing_tree.insert(key, handlers, scope)
 		
-
 	def CreateKey(self, user):
+		# create a permission object, which has a key
+		# assign key to the user, update configuration, and store key:permission in parent dict
 		permission = permissions.Permission(user, permissions_config)
 		key = permission.key
 		permissions_config[user].update({'key':permission.key})
@@ -81,17 +82,22 @@ class ITRAP():
 		def decorator(func):
 			@wraps(func)
 			def wrapper(self, *args, **kwargs):
-				data = json.loads(self.request['data'])
+				data = None
+				try:
+					data = json.loads(self.request['data'])
+				except:
+					self.formatResponse(400, 'Bad Request', {'error':'Bad JSON formatting.'})
+					return
 				params = data.get('params')
 				schema = thisSchema
 				if not params:
 					params = self.parameters
-				hasParams, validTypes = self.validateParameters(data, schema)
+				hasParams, validTypes = request_validation.validateParametersDict(data, schema)
 				if hasParams and validTypes:
 					# this will require some rework, but can pass deserialized data through params
-					func(self, *args, **kwargs)
+					func(self, data, *args, **kwargs)
 				else:
-					self.formatResponse(400, 'Bad Request', {})
+					self.formatResponse(400, 'Bad Request', {"error":"Missing params, or wrong type"})
 			return wrapper
 		return decorator
 
@@ -101,9 +107,7 @@ class ITRAP():
 			def wrapper(self, *args, **kwargs):
 				params = self.parameters
 				schema = thisSchema
-
-				hasParams, validTypes = self.validateParameters(params, schema)
-
+				hasParams, validTypes = request_validation.validateParametersDict(params, schema)
 				if hasParams and validTypes:
 					func(self, *args, **kwargs)
 				else:
@@ -157,61 +161,6 @@ class ITRAP():
 		}
 		self.formatResponse(400, 'Bad Request', data)
 		return -1
-
-	def validateParameters(self, pars: dict, schema):
-		included_pars = pars.keys()
-		expected_pars = schema['parameters']
-		required_pars = schema['required']
-
-		hasRequired = True
-		validType = False
-		for p in required_pars:
-			'''
-			GPT: suggests using isinstance() instead of type()
-			Second arg of isinstance can be a tuple of acceptable types
-			'''
-			if type(p) == str:
-				# `p in included_pars` will return boolean True or False
-				# if not included, hasRequired permanently False
-				hasRequired = hasRequired and (p in included_pars)
-			if type(p) == tuple:
-				hasTupleOption = False
-				for _p in p:
-					hasTupleOption = hasTupleOption or (_p in included_pars)
-				hasRequired = hasRequired and hasTupleOption
-				# check if one of these is present
-				pass
-		if hasRequired:
-			validType = True
-			for par, val in pars.items():
-
-				expected_type = expected_pars[par]['type']
-				if type(expected_type) == tuple:
-
-					validType = False
-					for _type in expected_type:
-
-						validType = validType or (_type == type(val))
-						#
-						if not validType:
-							try:
-								_type(val)
-								validType = validType or True
-							except:
-								pass
-						#
-				else:
-					validType = validType and (expected_type == type(val))
-					#
-					if not validType:
-						try:
-							expected_type(val)
-							validType = validType or True
-						except:
-							pass
-					#
-		print(hasRequired, validType)
-		return hasRequired, validType
 
 # --------------------------------------------------------#
 # -------------------- BEGIN HANDLERS --------------------#
@@ -340,12 +289,9 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['put_app_power'])
-	def putAppPower(self):
-		data = json.loads(self.request['data'])
-
+	def putAppPower(self, data):
 		power = data["state"]
 		app.power = power
-
 		data = {
 			'success': {
 				'name': 'Application Power',
@@ -417,11 +363,8 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['put_app_play'])
-	def putAppPlay(self):
-		data = json.loads(self.request['data'])
-
+	def putAppPlay(self, data):
 		play = data['play']
-
 		op("/local/time").play = play
 		data = {
 			'sucess': {
@@ -493,9 +436,7 @@ class ITRAP():
 		self.formatResponse(200, "OK", data)
 
 	@handler(schemas['put_project_cookRate'])
-	def putProjectCookRate(self):
-		data = json.loads(self.request['data'])
-
+	def putProjectCookRate(self, data):
 		rate = data['rate']
 		project.cookRate = rate
 		data = {
@@ -562,8 +503,7 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['put_project_realTime'])
-	def putProjectRealTime(self):
-		data = json.loads(self.request['data'])
+	def putProjectRealTime(self, data):
 		realTime = data['realTime']
 
 		project.realTime = realTime
@@ -591,9 +531,7 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['put_project_performOnStart'])
-	def putProjectPerformOnStart(self):
-		data = json.loads(self.request['data'])
-
+	def putProjectPerformOnStart(self, data):
 		performOnStart = data['performOnStart']
 
 		project.performOnStart = performOnStart
@@ -608,8 +546,7 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['post_project_load'])
-	def postProjectLoad(self):
-		data = json.loads(self.request['data'])
+	def postProjectLoad(self, data):
 		if 'path' in data.keys():
 			path = data['path']
 			_typeString = type(path) == str
@@ -631,8 +568,7 @@ class ITRAP():
 			self.formatResponse(204, 'No Content')
 
 	@handler(schemas['post_project_save'])
-	def postProjectSave(self):
-		data = json.loads(self.request['data'])
+	def postProjectSave(self, data):
 		if 'path' in data.keys():
 			path = data['path']
 			project.save(path)  # what if this returns an error?
@@ -690,9 +626,7 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['put_ui_masterVolume'])
-	def putUIMasterVolume(self):
-		data = json.loads(self.request['data'])
-
+	def putUIMasterVolume(self, data):
 		volume = data['volume']
 		ui.masterVolume = volume
 		data = {
@@ -754,9 +688,7 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	@handler(schemas['post_op'])
-	def postOp(self):
-		data = json.loads(self.request['data'])
-
+	def postOp(self, data):
 		name = data['name']
 		_type = data['type']
 		parent = data['parent']
@@ -793,8 +725,7 @@ class ITRAP():
 		self.formatResponse(201, 'Created', data)
 
 	@handler(schemas['delete_op'])
-	def deleteOp(self):
-		data = json.loads(self.request['data'])
+	def deleteOp(self, data):
 		path = data.get('path') or data.get('id')
 		operator = op(path)
 		if not operator:
@@ -870,9 +801,7 @@ class ITRAP():
 			self.formatResponse(404, 'Resource Not Found', {})
 
 	@handler(schemas['put_op_name'])
-	def putOpName(self):
-		data = json.loads(self.request['data'])
-
+	def putOpName(self, data):
 		path = data.get('path') or int(data.get('id'))
 		name = data.get('name')
 		operator = op(path)
@@ -959,11 +888,9 @@ class ITRAP():
 			self.formatResponse(404, 'Resource Not Found', data)
 
 	@handler(schemas['post_op_tags'])
-	def postOpTags(self):
+	def postOpTags(self, data):
 		# this might actually be a PATCH
 		# There should be a PUT and a PATCH; PUT will replace all tags, PATCH will just add
-		data = json.loads(self.request['data'])
-
 		path = data.get('path') or int(data.get('id'))
 		tags = data['tags']
 
@@ -980,8 +907,7 @@ class ITRAP():
 			self.formatResponse(404, 'Resource Not Found', data)
 
 	@handler(schemas['delete_op_tags'])
-	def deleteOpTags(self):
-		data = json.loads(self.request['data'])
+	def deleteOpTags(self, data):
 		path = data.get('path') or int(data.get('id'))
 		tags = data['tags']
 		for tag in tags:
@@ -1013,13 +939,19 @@ class ITRAP():
 		par = params['par']
 		val = params['val']
 		operator = op(path)
-		if operator:
+
+		if operator and operator.par[par]:
 
 			operator.par[par].val = val
 			data = {
 				'success': True
 			}
-		self.formatResponse(200, 'OK', data)
+			self.formatResponse(200, 'OK', data)
+		else:
+			data = {
+				'error':'The operator or parameter does not exist.'
+			}
+			self.formatResponse(404, 'Resource Not Found', data)
 
 	@handleGet(schemas['get_named_op'])
 	def getNamedOp(self):
@@ -1147,12 +1079,10 @@ class ITRAP():
 		self.request = request
 		self.response = response
 		self.parameters = request['pars']
-
 		uri = request['uri']
 		method = request['method']
 
 		self.response['content-type'] = 'application/json'
-		# self.ip_address = socket.gethostbyname(socket.gethostname())
 		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
 
 		handler, params, scope = self.routing_tree.find(uri, method)
@@ -1161,9 +1091,7 @@ class ITRAP():
 			# self.parameters = params
 			self.parameters.update(params)
 
-		print('uri')
 		if uri.split('/')[2] == 'monkey':
-			print('monkey')
 			handler(self)
 		else:
 			handler()

@@ -7,8 +7,8 @@ class TestTrie(unittest.TestCase):
 
     def setUp(self):
         self.trie = tt.Trie()
-        self.trie.insert('/api/v1/users', {'GET': 'get_users'}, 'users')
-        self.trie.insert('/api/v1/users/<user_id>', {'GET': 'get_user'}, 'users')
+        self.trie.insert("/api/banana/app/architecture",{'GET': self.getAppArchitecture},'app.architecture')
+        self.trie.insert("/api/banana/namedOp/<name>",{'GET': self.getNamedOp},'namedOp')
         self.trie.insert('/api/v1/users/<user_id>/posts', {'GET': 'get_user_posts', 'POST': 'create_user_post'}, 'users')
         self.trie.insert('/api/v1/posts/<post_id>', {'GET': 'get_post', 'PUT': 'update_post', 'DELETE': 'delete_post'}, 'posts')
 

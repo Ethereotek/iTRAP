@@ -85,7 +85,7 @@ schemas = {
     },
     'get_op': {
         'parameters': components['path&id'],
-        'required': [('path', 'id')]
+        'required': [['path', 'id']]
     },
     'post_op': {
         'parameters': {
@@ -107,7 +107,7 @@ schemas = {
     },
     'delete_op': {
         'parameters': components['path&id'],
-        'required': [('path', 'id')]
+        'required': [['path', 'id']]
     },
     'get_op_id': {
         'parameters': components['path'],
@@ -115,7 +115,7 @@ schemas = {
     },
     'get_op_name': {
         'parameters': components['path&id'],
-        'required': [('path', 'id')]
+        'required': [['path', 'id']]
     },
     'put_op_name': {
         'parameters': {
@@ -131,28 +131,28 @@ schemas = {
         },
         'required': [
             'name',
-            ('path', 'id')
+            ['path', 'id']
         ]
     },
     'get_op_storage': {
         'parameters': components['path&id'],
-        'required': [('path', 'id')]
+        'required': [['path', 'id']]
     },
     'get_op_tags': {
         'parameters': components['path&id'],
-        'required':[('path', 'id')]
+        'required':[['path', 'id']]
     },
     'post_op_tags':{
         'parameters':components['tag_params'],
         'required':[
-            ('path', 'id'),
+            ['path', 'id'],
             'tags'
 		]
 	},
     'delete_op_tags':{
         'parameters':components['tag_params'],
         'required':[
-            ('path', 'id'),
+            ['path', 'id'],
             'tags'
 		]
 	},
@@ -169,7 +169,7 @@ schemas = {
             }
         },
         'required':[
-            ('path','id'),
+            ['path','id'],
             'name'
         ]
     },
@@ -189,7 +189,7 @@ schemas = {
             }
         },
         'required':[
-            ('path', 'id'),
+            ['path', 'id'],
             'par',
             'val'
         ]
