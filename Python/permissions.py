@@ -28,17 +28,20 @@ class Permission:
 		return [re.compile(scope) for scope in _scopes]
 	
 	def ingestExclusions(self, _exclusions):
-		return [re.compile(exclusion) for exclusion in _exclusions]
+		if _exclusions:
+			return [re.compile(exclusion) for exclusion in _exclusions]
+		else:
+			return None
 
 	def validatePermission(self, givenScope):
 		permitted = False
 		for scope in self.scopes:
 			if re.match(scope, givenScope):
 				permitted = True
-		
-		for exclusion in self.exclusions:
-			if re.match(exclusion, givenScope):
-				permitted = False
+		if self.exclusions:
+			for exclusion in self.exclusions:
+				if re.match(exclusion, givenScope):
+					permitted = False
 		''' GPT: The validatePermission() method currently returns a boolean value 
 		indicating whether the given scope is permitted or not. 
 		Consider modifying the method to provide more detailed feedback to the user, 

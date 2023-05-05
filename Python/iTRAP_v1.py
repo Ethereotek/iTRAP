@@ -49,6 +49,7 @@ class ITRAP():
 			"/api/banana/sysinfo/ram": {'handlers':{'GET': self.getSysInfoRAM}, 'scope':'sysinfo.ram'},
 			"/api/banana/ui/masterVolume": {'handlers':{'GET': self.getUIMasterVolume, 'PUT': self.putUIMasterVolume}, 'scope':'ui.masterVolume'},
 			"/api/banana/monitors": {'handlers':{'GET': self.getMonitors}, 'scope':'monitors.'},
+			"/api/banana/monitors/<mon>":{'handlers':{'GET':self.getMonitor}, 'scope':'monitors.monitor'},
 			"/api/banana/monitors/refresh": {'handlers':{'POST': self.postMonitorsRefresh}, 'scope':'monitors.refresh'},
 			"/api/banana/op": {'handlers':{'GET': self.getOp, 'POST': self.postOp, 'DELETE': self.deleteOp}, 'scope':'op'},
 			"/api/banana/op/opIdMap": {'handlers':{'GET': self.getOpIdMap}, 'scope':'op.opIdMap'},
@@ -201,6 +202,13 @@ class ITRAP():
 				{
 					'rel': 'self',
 					'href': self.rel_prefix + 'api/banana/app/build'
+				},
+				{
+					'rel': 'app.product',
+					'href': self.rel_prefix + 'api/banana/app/product'
+				},{
+					'rel': 'app.version',
+					'href': self.rel_prefix + 'api/banana/app/version'
 				}
 			]
 		}
@@ -233,7 +241,7 @@ class ITRAP():
 		data = {
 			'name': 'Application Start Time',
 			'scope': 'app.startTimestamp',
-			'description': 'UNIX timestamp recorded when the application launches.',
+			'description': 'UNIX timestamp recorded when the application starts.',
 			'built-in': False,
 			'data': {
 					'value': timestamp,
@@ -273,7 +281,7 @@ class ITRAP():
 	def getAppPower(self):
 		data = {
 			'name': 'Application Power State',
-			'id': 'app.power',
+			'scope': 'app.power',
 			'description': 'Processing state of the application. This has a greater effect than simply pausing or stopping the playbar.',
 			'data': {
 					'value': app.power,
@@ -295,7 +303,7 @@ class ITRAP():
 		data = {
 			'success': {
 				'name': 'Application Power',
-				'id': 'app.power',
+				'scope': 'app.power',
 				'data': {
 						'value': app.power,
 						'type': 'bool'
@@ -322,6 +330,10 @@ class ITRAP():
 					'rel': 'app.version',
 					'href': self.rel_prefix + 'api/banana/app/version'
 				},
+				{
+					'rel': 'app.build',
+					'href': self.rel_prefix + 'api/banana/app/build'
+				}
 			]
 		}
 		self.formatResponse(200, 'OK', data)
@@ -329,7 +341,7 @@ class ITRAP():
 	def getAppVersion(self):
 		data = {
 			'name': 'Application Version',
-			'id': 'app.version',
+			'scope': 'app.version',
 			'description': 'Application version number.',
 			'built-in': True,
 			'data': {
@@ -343,6 +355,10 @@ class ITRAP():
 				},{
 					'rel':'app.product',
 					'href':self.rel_prefix + 'api/banana/app/product'
+				},
+				{
+					'rel': 'app.build',
+					'href': self.rel_prefix + 'api/banana/app/build'
 				}
 			]
 		}
@@ -351,7 +367,7 @@ class ITRAP():
 	def getAppPlay(self):
 		data = {
 			'name': 'Application Transport State',
-			'id': 'custom.app.play',
+			'scope': 'custom.app.play',
 			'description': 'Indicates whether the application is playing or stopped.',
 			'built-in': False,
 			'data': {
@@ -369,7 +385,7 @@ class ITRAP():
 		data = {
 			'sucess': {
 				'name': 'Application Transport State',
-				'id': 'custom.app.play',
+				'scop': 'custom.app.play',
 				'data': {
 						'value': op("/local/time").play,
 						'type': {
@@ -440,17 +456,22 @@ class ITRAP():
 		rate = data['rate']
 		project.cookRate = rate
 		data = {
-			'name': 'Project Cook Rate',
-			'scope': 'project.cookRate',
-			'data': {
-					'value': project.cookRate,
-					'type': 'float'
-			}
-
+			'success':{			
+				'name': 'Project Cook Rate',
+				'scope': 'project.cookRate',
+				'data': {
+						'value': project.cookRate,
+						'type': 'float'
+				}
+			},
+			'links':[
+				{
+					'rel':'self',
+					'href': self.rel_prefix + 'api/banana/project/cookRate'
+				}
+			]
 		}
 		self.formatResponse(200, 'OK', data)
-		# else:
-		# 	self.formatResponse(400, 'Bad Format', {})
 
 	def getProjectSaveVersion(self):
 		data = {
@@ -481,7 +502,19 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 
 	def getProjectSaveTime(self):
-		return
+		data = {
+			'name': 'Project Save Time',
+			'scope': 'project.saveTime',
+			'description': 'The datetime formatted timestamp when the project was last saved.',
+			'built-in': True,
+			'data': {
+					'value': project.saveTime,
+					'type': 'datetime'
+			},
+			'links':[]
+		}
+
+		self.formatResponse(200, 'OK', data)
 
 	def getProjectSaveOSName(self):
 		return
@@ -498,7 +531,8 @@ class ITRAP():
 			'data': {
 					'value': project.realTime,
 					'type': 'bool'
-			}
+			},
+			'links':[]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -508,12 +542,15 @@ class ITRAP():
 
 		project.realTime = realTime
 		data = {
-			'name': 'Project Real Time',
-			'scope': 'project.realTime',
-			'data': {
-					'value': project.realTime,
-					'type': 'bool'
-			}
+			'success':{			
+				'name': 'Project Real Time',
+				'scope': 'project.realTime',
+				'data': {
+						'value': project.realTime,
+						'type': 'bool'
+				}
+			},
+			'links':[]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -536,12 +573,15 @@ class ITRAP():
 
 		project.performOnStart = performOnStart
 		data = {
-			'name': 'Project Perform on Start',
-			'scope': 'project.performOnStart',
-			'data': {
-					'value': project.performOnStart,
-					'type': 'bool'
-			}
+			'success':{
+				'name': 'Project Perform on Start',
+				'scope': 'project.performOnStart',
+				'data': {
+						'value': project.performOnStart,
+						'type': 'bool'
+				}
+			},
+			'links':[]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -584,34 +624,31 @@ class ITRAP():
 
 	def getSysInfoNumCpus(self):
 		data = {
-			'name': 'Sysinfo CPU Count',
+			'name': 'System CPU Count',
 			'scope': 'sysinfo.numCPUs',
 			'description': '',
+			'built-in':True,
 			'data': {
 					'value': sysinfo.numCPUs,
-					'type': int
-			}
+					'type': 'int'
+			},
+			'links':[]
 		}
 
 		self.formatResponse(200, 'OK', data)
 
 	def getSysInfoRAM(self):
 		data = {
-			'name': 'Sysinfo RAM',
+			'name': 'System RAM',
 			'scope': 'sysinfo.ram',
 			'description': '',
+			'built-in':True,
 			'data': {
 					'value': sysinfo.ram,
-					'type': int
+					'type': 'int'
 			}
 		}
 		self.formatResponse(200, 'OK', data)
-
-	def getSysInfoRes(self):
-		return
-
-	def getSysInfoNumMonitors(self):
-		return
 
 	def getUIMasterVolume(self):
 		data = {
@@ -630,22 +667,24 @@ class ITRAP():
 		volume = data['volume']
 		ui.masterVolume = volume
 		data = {
-			'name': 'UI Master Volume',
-			'id': 'ui.masterVolume',
-			'data': {
-					'value': ui.masterVolume,
-					'type': 'float'
+			'success':{
+				'name': 'UI Master Volume',
+				'scope': 'ui.masterVolume',
+				'data': {
+						'value': ui.masterVolume,
+						'type': 'float'
+				}
 			}
 		}
 		self.formatResponse(200, 'OK', data)
 
 	def getMonitors(self):
 		monitorsData = []
-		monitorLinks = [{
+		monitorLinks = [
+			{
 			'rel': 'self',
 			'href': self.rel_prefix + 'api/banana/monitors'
-
-		}
+			}
 		]
 		for m in range(len(monitors)):
 			thisMonitor = {
@@ -671,6 +710,72 @@ class ITRAP():
 			'links': monitorLinks
 		}
 		self.formatResponse(200, 'OK', data)
+	
+	def getMonitor(self):
+		params = self.parameters
+		index = int(params.get('mon'))
+		if index == None:
+			self.formatResponse(400, 'Bad Format', {})
+			return
+		thisMonitor = monitors[index]
+		if thisMonitor:
+			data = {
+				'name':'Monitor',
+				'scope':'monitors.monitor',
+				'description':'',
+				'built-in':True,
+				'data':{
+					'description':{
+						'value':thisMonitor.description,
+						'type':'str'
+					},
+					'isPrimary':{
+						'value':thisMonitor.isPrimary,
+						'type':'bool'
+					},
+					'resolution':{
+						'width':{
+							'value':thisMonitor.width,
+							'type':'int'
+						},
+						'height':{
+							'value':thisMonitor.height,
+							'type':'int'
+						}
+					},
+					'position':{
+						'left':{
+							'value':thisMonitor.left,
+							'type':'int'
+						},
+						'right':{
+							'value':thisMonitor.right,
+							'type':'int'
+							},
+						'top':{
+							'value':thisMonitor.top,
+							'type':'int'
+						},
+						'bottom':{
+							'value':thisMonitor.bottom,
+							'type':'int'
+						}
+					},
+					'refreshRate':{
+						'value':thisMonitor.refreshRate,
+						'type':'float'
+					},
+					'serialNumber':{
+						'value':thisMonitor.serialNumber,
+						'type':'str'
+					}
+				},
+				'links':[]
+			}
+			self.formatResponse(200, 'OK', data)
+
+		else:
+			self.formatResponse(404, 'Resource Not Found', {})
 
 	def postMonitorsRefresh(self):
 		return
@@ -681,9 +786,36 @@ class ITRAP():
 
 		path = self.parameters.get('path') or self.parameters.get('id')
 		operator = op(path)
+		if not operator:
+			self.formatResponse(404, 'Resource Not Found', {})
+			return
 
 		data = {
-			'success': 'I will format later'
+			'name':'Operator',
+			'scope':'op',
+			'description':'',
+			'built-in':True,
+			'data':{
+				'id':operator.id,
+				'name':operator.name,
+				'path':operator.path,
+				'time':{
+					'path':operator.time.path,
+					'id':operator.time.id
+					},
+				'parent':{
+					'path':operator.parent().path,
+					'id':operator.parent().id
+					},
+				'type':{
+					'label':operator.label,
+					'family':operator.family,
+					'type':operator.type,
+					'subType':operator.subType,
+					'OPType':operator.OPType
+				}
+			},
+			'links':[]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -692,34 +824,37 @@ class ITRAP():
 		name = data['name']
 		_type = data['type']
 		parent = data['parent']
+
+		if not op(parent):
+			self.formatResponse(409, 'Conflict', {'conflict':'Parent does not exist.'})
+			return
+		
 		newOp = op(parent).create(_type, name)
 
-		# need to check if parent exists
 		data = {
-			'name-space': 'Operator',
-			'id-space': 'op',
+			'name': 'Operator',
+			'scope': 'op',
+			'description':'',
+			'built-in':True,
 			'data': {
-				'name': newOp.name,
-				'id': newOp.id,
-				'path': newOp.path,
-				'type': {
-						'family': newOp.family,
-						'label': newOp.label,
-						'type': newOp.type,
-						'subType': newOp.subType,
-						'OPType': newOp.OPType
-
-				},
-				'time': newOp.time.path,
-				'flags': [
-					'activeViewer',
-					'allowCooking',
-					'bypass',
-					'cloneImmune',
-					'current',
-					'display',
-					'comment'
-				]
+				'id':newOp.id,
+				'name':newOp.name,
+				'path':newOp.path,
+				'time':{
+					'path':newOp.time.path,
+					'id':newOp.time.id
+					},
+				'parent':{
+					'path':newOp.parent().path,
+					'id':newOp.parent().id
+					},
+				'type':{
+					'label':newOp.label,
+					'family':newOp.family,
+					'type':newOp.type,
+					'subType':newOp.subType,
+					'OPType':newOp.OPType
+				}
 			}
 		}
 		self.formatResponse(201, 'Created', data)
@@ -744,7 +879,7 @@ class ITRAP():
 
 		data = {
 			'name': 'Operator Id Map',
-			'id': 'op("mapped_operator_ids")',
+			'scope': 'op.ids',
 			'description': 'Dictionary mapping absolute operator paths to their unique ID\'s. Only contains operators that have been explicitly configured.',
 			'built-in': False,
 			'data': {
@@ -765,7 +900,7 @@ class ITRAP():
 			_id = operator.id
 			data = {
 				'name': 'Operator ID',
-				'id': 'op.id',
+				'scope': 'op.id',
 				'description': 'Unique integer identifier.',
 				'built-in': True,
 				'data': {
@@ -813,7 +948,7 @@ class ITRAP():
 		data = {
 			'success': {
 				'name': 'Operator',
-				'id': 'op.name'
+				'scope': 'op.name'
 			}
 		}
 		self.formatResponse(200, 'OK', data)
@@ -833,7 +968,7 @@ class ITRAP():
 
 		data = {
 			'name': 'Operator Storage',
-			'id': 'op.storage',
+			'scope': 'op.storage',
 			'description': '',
 			'data': {
 					'value': operator.storage,
@@ -926,7 +1061,6 @@ class ITRAP():
 		operator = op(path)
 		if operator:
 			value = operator.par[par].val
-		# value = op(path).par[param].val
 			data = {
 				'data': value
 			}
@@ -1049,31 +1183,6 @@ class ITRAP():
 			}
 		}
 		self.formatResponse(200, 'OK', data)
-	'''
-	def HandleRequest(self, request, response):
-		self.request = request
-		self.response = response
-		self.parameters = request['pars']
-		method = request['method']
-		uri = request['uri']
-
-
-		self.response['content-type'] = 'application/json'
-		# self.ip_address = socket.gethostbyname(socket.gethostname())
-		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
-		route = f'{method} {uri}'
-		try:
-			self.routing_table[route]()
-		except:
-			print('exception')
-			func = self.routing_table[route][0]
-			args = self.routing_table[route][1]
-			func(args)
-
-		# formatResponse(self.response, 200, 'OK', data)
-
-		return self.response
-	'''
 
 	def HandleRequest(self, request, response):
 		self.request = request
@@ -1082,10 +1191,30 @@ class ITRAP():
 		uri = request['uri']
 		method = request['method']
 
+		self.token = request.get('Authorization')
+
+		if not self.token:
+			self.formatResponse(401, 'Not Authorized', {})
+			return self.response
+
+		else:
+			try: 
+				self.token = self.token.split(' ')[1]
+				print(self.token)
+			except:
+				self.formatResponse(400, 'Bad Format', {})
+		
+		self.permission = me.parent().storage['Permissions'].get(self.token)
+		if not self.permission:
+			self.formatResponse(401, 'Not Authorized', {})
+			return self.response
+		
 		self.response['content-type'] = 'application/json'
 		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
 
 		handler, params, scope = self.routing_tree.find(uri, method)
+
+		permitted = self.permission.validatePermission(scope)
 
 		if params:
 			# self.parameters = params
