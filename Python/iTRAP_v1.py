@@ -1,10 +1,12 @@
 import json
 from functools import wraps
+import copy
 
 schemas = mod('schemas').schemas
 ttree = mod('ttree_builder')
 permissions = mod('Permissions')
 request_validation = mod('request_validation')
+butils = mod('butils')
 
 permissions_config_dat = op('permissions_config')
 permissions_config = json.loads(permissions_config_dat.text)
@@ -18,8 +20,8 @@ class ITRAP():
 		self.itrap_port = thisComp.par.Port
 		self.ip_address = thisComp.par.Ipaddress
 
-		if not me.parent().storage.get('Permissions'):
-			me.parent().store('Permissions',{})
+		if not self.thisComp.storage.get('Permissions'):
+			self.thisComp.store('Permissions',{})
 		print(thisComp)
 
 		self.routing_table = {
@@ -38,7 +40,9 @@ class ITRAP():
 			"/api/banana/project/saveTime": {'handlers':{'GET': self.getProjectSaveTime}, 'scope':'project.saveTime'},
 			"/api/banana/project/saveOSName": {'handlers':{'GET': self.getProjectSaveOSName}, 'scope':'project.saveOSName'},
 			"/api/banana/project/saveOSVersion": {'handlers':{'GET': self.getProjectSaveOSVersion}, 'scope':'project.saveOSVersion'},
-			"/api/banana/project/paths": {'handlers':{'GET': self.getProjectPaths}, 'scope':'project.paths'},
+			"/api/banana/project/paths": {'handlers':{'GET': self.getProjectPaths,'PUT':self.putProjectPaths}, 'scope':'project.paths'},
+			"/api/banana/project/paths/path/<name>":{'handlers':{'GET': self.getProjectPath,'PUT':self.putProjectPath}, 'scope':'project.paths'},
+			"/api/banana/project/paths/new":{'handlers':{'POST': self.postProjectPath}, 'scope':'project.paths'},
 			"/api/banana/project/cookRate": {'handlers':{'GET': self.getProjectCookRate, 'PUT': self.putProjectCookRate}, 'scope':'project.cookRate'},
 			"/api/banana/project/realTime": {'handlers':{'GET': self.getProjectRealTime, 'PUT': self.putProjectRealTime}, 'scope':'project.'},
 			"/api/banana/project/performOnStart": {'handlers':{'GET': self.getProjectPerformOnStart, 'PUT': self.putProjectPerformOnStart}, 'scope':'project.performOnStart'},
@@ -49,26 +53,130 @@ class ITRAP():
 			"/api/banana/sysinfo/ram": {'handlers':{'GET': self.getSysInfoRAM}, 'scope':'sysinfo.ram'},
 			"/api/banana/ui/masterVolume": {'handlers':{'GET': self.getUIMasterVolume, 'PUT': self.putUIMasterVolume}, 'scope':'ui.masterVolume'},
 			"/api/banana/monitors": {'handlers':{'GET': self.getMonitors}, 'scope':'monitors.'},
-			"/api/banana/monitors/<mon>":{'handlers':{'GET':self.getMonitor}, 'scope':'monitors.monitor'},
+			"/api/banana/monitors/monitor/<mon>":{'handlers':{'GET':self.getMonitor}, 'scope':'monitors.monitor'},
+			"/api/banana/monitors/monitor/<mon>/<attribute>":{'handlers':{'GET':self.getMonitorAttribute}, 'scope':'monitors.monitor'},
 			"/api/banana/monitors/refresh": {'handlers':{'POST': self.postMonitorsRefresh}, 'scope':'monitors.refresh'},
 			"/api/banana/op": {'handlers':{'GET': self.getOp, 'POST': self.postOp, 'DELETE': self.deleteOp}, 'scope':'op'},
+			"/api/banana/op/attributes/<attribute>":{'handlers':{'GET':self.getOpAttribute, 'PUT':self.putOpAttribute}, 'scope':'op.attribute'},
 			"/api/banana/op/opIdMap": {'handlers':{'GET': self.getOpIdMap}, 'scope':'op.opIdMap'},
 			"/api/banana/op/id": {'handlers':{'GET': self.getOpID}, 'scope':'op.id'},
+			"/api/banana/op/cookMetrics":{'handlers':{},'scope':'op.cook'},
 			"/api/banana/op/id/<op-id>/par/<par-name>": {'handlers':{'GET': self.getOpPar}, 'scope':'op.par'},
 			"/api/banana/op/id/<id>/par/<par>/val/<val>": {'handlers':{'PUT': self.putOpPar}, 'scope':'op.par.val'},
 			"/api/banana/op/name": {'handlers':{'GET': self.getOpName, 'PUT': self.putOpName}, 'scope':'op.name'},
 			"/api/banana/op/storage": {'handlers':{'GET': self.getOpStorage}, 'scope':'op.storage'},
 			"/api/banana/op/tags": {'handlers':{'GET': self.getOpTags, 'POST': self.postOpTags, 'DELETE': self.deleteOpTags}, 'scope':'op.tags'},
 			"/api/banana/op/par": {'handlers':{'GET': self.getOpPar, 'PUT': self.putOpPar}, 'scope':'op.par'},
-			"/api/banana/namedOp/<name>": {'handlers':{'GET': self.getNamedOp}, 'scope':'namedOp'},
-			"/api/banana/namedOp/<name>/attribute/<attribute>": {'handlers':{'GET': self.getNamedOpAttribute, 'PUT': self.putNamedOpAttribute}, 'scope':'namedOp.attribute'},
-			"/api/banana/namedOp/<name>/par/<par>": {'handlers':{'GET': self.getNamedOpPar}, 'scope':'namedOp.par'}
+			"/api/banana/namedOps":{'handlers':{'GET':self.getNamedOps}, 'scope':'namedOps'},
+			"/api/banana/namedOps/op/<name>": {'handlers':{'GET': self.getNamedOp}, 'scope':'namedOp'},
+			"/api/banana/namedOps/op/<name>/attribute/<attribute>": {'handlers':{'GET': self.getNamedOpAttribute, 'PUT': self.putNamedOpAttribute}, 'scope':'namedOps.attribute'},
+			"/api/banana/namedOps/op/<name>/par/<par>": {'handlers':{'GET': self.getNamedOpPar,'PUT':self.putNamedOpPar}, 'scope':'namedOps.par'},
+			"/api/banana/namedPars":{'handlers':{'GET':self.getNamedPars}, 'scope':'namedPars'},
+			"/api/banana/namedPars/par/<name>": {'handlers':{'GET': self.getNamedPar, 'PUT':self.putNamedPar}, 'scope':'namedPars'}
+
 		}
 
 		for key, val in self.routing_table.items():
 			handlers = val.get('handlers')
 			scope = val.get('scope')
 			self.routing_tree.insert(key, handlers, scope)
+
+#--------------------------------------------------------------#
+#--------------------------------------------------------------#
+#--------------------------------------------------------------#	
+	def getPermission(self):
+
+		self.token = self.request.get('Authorization')
+
+		# if there is no token
+		if not self.token:
+			self.formatResponse(401, 'Not Authorized', {})
+			return False
+
+		# if the token can't be unpacked
+		else:
+			try: 
+				self.token = self.token.split(' ')[1]
+
+			except:
+				self.formatResponse(400, 'Bad Format', {})
+				return False
+		
+		permission = self.thisComp.storage['Permissions'].get(self.token)
+		return permission
+
+	def getTrieNode(self):
+		pass
+
+	def handleBanana(self):
+		pass
+	def HandleRequest(self, request, response):
+		self.request = request
+		self.response = response
+		self.parameters = request['pars']
+		uri = request['uri']
+		method = request['method']
+
+		self.response['content-type'] = 'application/json'
+		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
+
+		self.permission = self.getPermission()
+		if not self.permission:
+			self.formatResponse(401, 'Not Authorized', {})
+			return self.response
+
+		# handler, params, scope = self.routing_tree.find(uri, method)
+		node, params = self.routing_tree.find(uri)
+		handler = node.handlers.get(method)
+		scope = node.scope
+		if not handler:
+			allow = ','.join(node.handlers.keys())
+			response['Allow'] = allow
+			self.formatResponse(405, 'Method Not Allowed', {})
+			return self.response
+
+		# check that scope is allowed in apiKey's permission
+		scope += ('.' + method.lower())
+		permitted = self.permission.validatePermission(scope)
+
+		if not permitted:
+			self.formatResponse(401, 'Not Authorized', {})
+			return self.response
+
+		# add the parameters collected from the URL parsing to self.parameters
+		if params:
+			self.parameters.update(params)
+
+		if uri.split('/')[2] == 'monkey':
+			handler(self)
+		else:
+			handler()
+		return self.response
+
+	def format500(self, data=None, error='unknown'):
+		if not data:
+			data = {
+				'error': {'message': f'Server encountered an exception while encoding return data.',
+					'exception': error}
+			}
+		self.response['statusCode'] = 500
+		self.response['statusReason'] = 'Internal Server Error'
+		self.response['data'] = data
+
+	def formatResponse(self, code, reason, data={}):
+		try:
+			data = json.dumps(data)
+		except Exception as e:
+			self.format500(error=str(e))
+		finally:
+			self.response["statusCode"] = code
+			self.response["statusReason"] = reason
+			self.response["data"] = data
+
+	def InsertRoute(self, url: str, handlers: dict):
+		self.url = url
+		url = '/api/monkey' + url
+		self.routing_tree.insert(url, handlers)
 		
 	def CreateKey(self, user):
 		# create a permission object, which has a key
@@ -77,70 +185,7 @@ class ITRAP():
 		key = permission.key
 		permissions_config[user].update({'key':permission.key})
 		permissions_config_dat.text = json.dumps(permissions_config)
-		me.parent().storage["Permissions"].update({key:permission})
-
-	def handler(thisSchema):
-		def decorator(func):
-			@wraps(func)
-			def wrapper(self, *args, **kwargs):
-				data = None
-				try:
-					data = json.loads(self.request['data'])
-				except:
-					self.formatResponse(400, 'Bad Request', {'error':'Bad JSON formatting.'})
-					return
-				params = data.get('params')
-				schema = thisSchema
-				if not params:
-					params = self.parameters
-				hasParams, validTypes = request_validation.validateParametersDict(data, schema)
-				if hasParams and validTypes:
-					# this will require some rework, but can pass deserialized data through params
-					func(self, data, *args, **kwargs)
-				else:
-					self.formatResponse(400, 'Bad Request', {"error":"Missing params, or wrong type"})
-			return wrapper
-		return decorator
-
-	def handleGet(thisSchema):
-		def decorator(func):
-			@wraps(func)
-			def wrapper(self, *args, **kwargs):
-				params = self.parameters
-				schema = thisSchema
-				hasParams, validTypes = request_validation.validateParametersDict(params, schema)
-				if hasParams and validTypes:
-					func(self, *args, **kwargs)
-				else:
-					self.formatResponse(400, 'Bad Request', {})
-			return wrapper
-		return decorator
-
-	def mapOperators(self):
-		'''
-						Gets id of each path listed in the specified table
-						Then builds a dictionary of form:
-						<operator-name>:{
-										'path':<op-path>,
-										'id':<op-id>
-						}
-		'''
-		operator_id_map = {}
-		for row in op("map_operator_ids/operator_id_map").rows():
-			path = row[0].val
-			operator = op(path)
-
-			_id = operator.id
-			name = operator.name
-			row[1].val = _id
-
-			_map = {
-				'path': path,
-				'id': _id
-			}
-			operator_id_map[name] = _map
-
-		return operator_id_map
+		self.thisComp.storage["Permissions"].update({key:permission})
 
 	def quit(self):
 		project.quit(force=True)
@@ -163,11 +208,63 @@ class ITRAP():
 		self.formatResponse(400, 'Bad Request', data)
 		return -1
 
+#--------------------------------------------------------------#
+#-------------------------- WRAPPERS --------------------------#
+#--------------------------------------------------------------#
+	'''
+	This is a bit confusing and needs to be fixed, but:
+		if the parameters are in the body, use handler(), otherwise use handleGet()
+		The handler() method assumes the data is a parameters object
+		It has the logic set up to unpack 'params' from the data dictionary, but doesn't actually use that
+		In this logic, if data.get('params') returns None, it uses self.parameters
+		In this way, we should be able to combine both handlers into one,
+		The spec needs to be updated to require that the parameters be the value to a property called "params"
+	'''
+	def handler(thisSchema):
+		def decorator(func):
+			@wraps(func)
+			def wrapper(self, *args, **kwargs):
+				data = None
+				try:
+					data = json.loads(self.request['data'])
+				except:
+					self.formatResponse(400, 'Bad Request', {'error':'Bad JSON formatting.'})
+					return
+				params = data.get('params')
+				schema = thisSchema
+				if not params:
+					print('no params')
+					params = self.parameters
+				hasParams, validTypes = request_validation.validateParametersDict(data, schema)
+				if hasParams and validTypes:
+					# this will require some rework, but can pass deserialized data through params
+					func(self, data, *args, **kwargs)
+				else:
+					self.formatResponse(400, 'Bad Request', {"error":"Missing params, or wrong type."})
+			return wrapper
+		return decorator
+
+	def handleGet(thisSchema):
+		def decorator(func):
+			@wraps(func)
+			def wrapper(self, *args, **kwargs):
+				params = self.parameters
+				schema = thisSchema
+				hasParams, validTypes = request_validation.validateParametersDict(params, schema)
+				if hasParams and validTypes:
+					func(self, *args, **kwargs)
+				else:
+					self.formatResponse(400, 'Bad Request', {})
+			return wrapper
+		return decorator
+
 # --------------------------------------------------------#
 # -------------------- BEGIN HANDLERS --------------------#
 # --------------------------------------------------------#
 
-#---------------------- APPLICATION ----------------------#
+# -----------------------------------------------------#
+# -------------------- APPLICATION --------------------#
+# -----------------------------------------------------#
 
 	def getAppArchitecture(self):
 		data = {
@@ -220,19 +317,12 @@ class ITRAP():
 			'scope': 'app.launchTime',
 			'description': 'Total time required to launch and begin playing the toe file, measured in seconds.',
 			'built-in': True,
-			'data': {
-					'value': app.launchTime,
-					'type': 'float'
-			},
-			'links': [
-				{
-					'rel': 'self',
-					'href': self.rel_prefix + 'api/banana/app/launchTime'
-				},{
-					'rel':'app.startTimestamp',
-					'href': self.rel_prefix + 'api/banana/app/startTimestamp'
-				}
-			]
+			'data': {'value': app.launchTime,
+					'type': 'float'},
+			'links': [{'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/app/launchTime'},
+					{'rel':'app.startTimestamp',
+					'href': self.rel_prefix + 'api/banana/app/startTimestamp'}]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -244,7 +334,7 @@ class ITRAP():
 			'description': 'UNIX timestamp recorded when the application starts.',
 			'built-in': False,
 			'data': {
-					'value': timestamp,
+					'value': float(timestamp),
 					'type': 'float'
 			},
 			'links': [
@@ -367,13 +457,19 @@ class ITRAP():
 	def getAppPlay(self):
 		data = {
 			'name': 'Application Transport State',
-			'scope': 'custom.app.play',
+			'scope': 'app.play',
 			'description': 'Indicates whether the application is playing or stopped.',
 			'built-in': False,
 			'data': {
-					'value': op('/local/time').play,
-					'type': 'bool'
-			}
+					'value': op('/local/time').par.play.val,
+					'type': 'integer'
+			},
+			'links':[
+				{
+					'rel':'self',
+					'href': self.rel_prefix + 'api/banana/app.play'
+				}
+			]
 		}
 
 		self.formatResponse(200, 'OK', data)
@@ -381,41 +477,40 @@ class ITRAP():
 	@handler(schemas['put_app_play'])
 	def putAppPlay(self, data):
 		play = data['play']
-		op("/local/time").play = play
+		op("/local/time").par.play = play
 		data = {
 			'sucess': {
 				'name': 'Application Transport State',
-				'scop': 'custom.app.play',
+				'scope': 'custom.app.play',
+				'description': 'Indicates whether the application is playing or stopped.',
 				'data': {
-						'value': op("/local/time").play,
-						'type': {
-							"oneOf": [
-								'boolean',
-								'integer'
-							]
+						'value': op("/local/time").par.play.val,
+						'type': 'int'
 						}
+				},
+				'links':[
+				{
+					'rel':'self',
+					'href': self.rel_prefix + 'api/banana/app.play'
 				}
+			]
 			}
-		}
+
 		self.formatResponse(200, 'OK', data)
 
-#---------------------- PROJECT ----------------------#
+# -------------------------------------------------#
+# -------------------- PROJECT --------------------#
+# -------------------------------------------------#
 	def getProjectName(self):
 		data = {
 			'name': 'Project Name',
 			'scope': 'project.name',
 			'description': 'The filename under which the project is saved.',
 			'built-in': True,
-			'data': {
-					'value': project.name,
-					'type': 'str'
-			},
-			'links': [
-				{
-					'rel': 'self',
-					'href': self.rel_prefix + 'api/banana/project/name'
-				}
-			]
+			'data': {'value': project.name,
+					'type': 'str'},
+			'links': [{'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/name'}]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -425,16 +520,73 @@ class ITRAP():
 			'scope': 'project.paths',
 			'description': 'A dictionary which can be used to define URL-syntax path prefixes, enabling you to move your media to different locations easily.',
 			'built-in': True,
-			'data': {
-					'value': project.paths,
-					'type': 'dict'
-			}
+			'data': {'value': project.paths,
+					'type': 'dict'}
 		}
 		self.formatResponse(200, "OK", data)
+	
+	@handleGet(schemas['get_project_path'])
+	def getProjectPath(self):
+		name = self.parameters.get('name')
+		path = project.paths.get(name)
+		if path:
+			data = {
+				'name':f'Project Path: {name}',
+				'scope':'project.paths',
+				'description':'',
+				'data':{
+					'value':path,
+					'type':'path'
+				},
+				'links':[]
+			}
+			self.formatResponse(200, 'OK', data)
+		else:
+			self.formatResponse(404, 'Resource Not Found', {})
 
-	def postProjectPaths(self):
-		pass
+	@handler(schemas['post_project_path'])
+	def postProjectPath(self):
+		params = self.parameters
+		name = params.get('name')
+		path = params.get('path')
 
+		if name in project.paths.keys():
+			data = {
+				'conflict':f'The named path {name} already exists. Use PUT to change it or choose a different name.'
+			}
+			self.formatResponse(409, 'Conflict')
+		else:
+			project.paths[name] = path
+			data = {
+				'success':{
+					'name':'Project Path',
+					'scope':'project.paths',
+					'description':'',
+					'built-in':True,
+					'data':{'value':{name:path},
+						'type':'dict'}
+				}
+			}
+			self.formatResponse(201, 'Created', data)
+
+	@handleGet(schemas['put_project_path'])
+	def putProjectPath(self):
+		name = self.parameters.get('name')
+		path = self.parameters.get('path')
+		currentPath = project.paths.get(name)
+		if currentPath:
+			project.paths[name] = path
+			data = {
+				'name':f'Project Path {name}',
+				'scope':'project.paths',
+				'data':{'value':project.paths.get(name),
+	    				'type':'str'}
+			}
+			self.formatResponse(200, 'OK', data)
+		else:
+			data = {'error':f'{name} is not in project paths.'}
+			self.formatResponse(404, 'Resource Not Found', data)
+		
 	def putProjectPaths(self):
 		pass
 
@@ -444,10 +596,10 @@ class ITRAP():
 			'scope': 'project.cookRate',
 			'description': 'The maximum number of frames processed each second.',
 			'built-in': True,
-			'data': {
-					'value': project.cookRate,
-					'type': 'float'
-			}
+			'data': {'value': project.cookRate,
+					'type': 'float'},
+			'links':[{'rel':'self',
+					'href': self.rel_prefix + 'api/banana/project/cookRate'}]
 		}
 		self.formatResponse(200, "OK", data)
 
@@ -459,17 +611,11 @@ class ITRAP():
 			'success':{			
 				'name': 'Project Cook Rate',
 				'scope': 'project.cookRate',
-				'data': {
-						'value': project.cookRate,
-						'type': 'float'
-				}
+				'data': {'value': project.cookRate,
+						'type': 'float'}
 			},
-			'links':[
-				{
-					'rel':'self',
-					'href': self.rel_prefix + 'api/banana/project/cookRate'
-				}
-			]
+			'links':[{'rel':'self',
+					'href': self.rel_prefix + 'api/banana/project/cookRate'}]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -479,12 +625,13 @@ class ITRAP():
 			'scope': 'project.saveVersion',
 			'description': 'The App version number when the project was last saved.',
 			'built-in': True,
-			'data': {
-					'value': project.saveVersion,
-					'type': 'str'
-			}
+			'data': {'value': project.saveVersion,
+					'type': 'str'},
+			'links':[{'rel':'self',
+						'href': self.rel_prefix + 'api/banana/project/saveVersion'},
+					{'rel':'Application Version',
+						'href': self.rel_prefix + 'api/banana/app/version'}]
 		}
-
 		self.formatResponse(200, 'OK', data)
 
 	def getProjectSaveBuild(self):
@@ -496,7 +643,16 @@ class ITRAP():
 			'data': {
 					'value': project.saveBuild,
 					'type': 'str'
-			}
+			},
+			'links':[
+				{
+					'rel':'self',
+					'href': self.rel_prefix + 'api/banana/project/saveBuild'
+				},{
+					'rel':'Application Version',
+					'href': self.rel_prefix + 'api/banana/app/build'
+				}
+			]
 		}
 
 		self.formatResponse(200, 'OK', data)
@@ -511,16 +667,69 @@ class ITRAP():
 					'value': project.saveTime,
 					'type': 'datetime'
 			},
-			'links':[]
+			'links':[
+				{
+					'rel':'self',
+					'href': self.rel_prefix + 'api/banana/project/saveTime'
+				}
+			]
 		}
 
 		self.formatResponse(200, 'OK', data)
 
 	def getProjectSaveOSName(self):
-		return
+		data = {
+			'name': 'Project Save OS Name',
+			'scope': 'project.saveOSName',
+			'description': 'The App operating system name when the project was last saved.',
+			'built-in': True,
+			'data': {
+					'value': project.saveOSName,
+					'type': 'str'
+			},
+			'links': [
+				{
+					'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/saveOSName'
+				},
+				{
+					'rel':'app.osName',
+					'href': self.rel_prefix + 'api/banana/app/osName'
+				},
+				{
+					'rel': 'project.saveOSVersion',
+					'href': self.rel_prefix + 'api/banana/project/saveOSVersion'
+				}
+			]
+		}
+		self.formatResponse(200, 'OK', data)
 
 	def getProjectSaveOSVersion(self):
-		return
+		data = {
+			'name': 'Project Save OS Version',
+			'scope': 'project.saveOSVersion',
+			'description': 'The App operating system version when the project was last saved.',
+			'built-in': True,
+			'data': {
+					'value': project.saveOSVersion,
+					'type': 'str'
+			},
+			'links': [
+				{
+					'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/saveOSVersion'
+				},
+				{
+					'rel': 'project.saveOSName',
+					'href': self.rel_prefix + 'api/banana/project/saveOSName'
+				},
+				{
+					'rel':'app.osName',
+					'href': self.rel_prefix + 'api/banana/app/osName'
+				}
+			]
+		}
+		self.formatResponse(200, 'OK', data)
 
 	def getProjectRealTime(self):
 		data = {
@@ -532,7 +741,12 @@ class ITRAP():
 					'value': project.realTime,
 					'type': 'bool'
 			},
-			'links':[]
+			'links':[
+				{
+					'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/realTime'
+				}
+			]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -550,7 +764,12 @@ class ITRAP():
 						'type': 'bool'
 				}
 			},
-			'links':[]
+			'links':[
+				{
+					'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/realTime'
+				}
+			]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -563,7 +782,13 @@ class ITRAP():
 			'data': {
 					'value': project.performOnStart,
 					'type': 'bool'
-			}
+			},
+			'links':[
+				{
+					'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/performOnStart'
+				}
+			]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -581,7 +806,12 @@ class ITRAP():
 						'type': 'bool'
 				}
 			},
-			'links':[]
+			'links':[
+				{
+					'rel': 'self',
+					'href': self.rel_prefix + 'api/banana/project/performOnStart'
+				}
+			]
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -605,23 +835,29 @@ class ITRAP():
 					self.formatResponse(code, message)
 		else:
 			project.load()
-			self.formatResponse(204, 'No Content')
+			self.formatResponse(204, 'No Content', {})
 
-	@handler(schemas['post_project_save'])
-	def postProjectSave(self, data):
-		if 'path' in data.keys():
-			path = data['path']
-			project.save(path)  # what if this returns an error?
+	@handleGet(schemas['post_project_save'])
+	def postProjectSave(self):
+		params = self.parameters
+		path = params.get('path') or project.name
+		if path.split('.')[-1] != 'toe':
+			path += '.toe'
+		save = project.save(path)
+
+		if save:
+			data = {'success':'Project saved'}
+			self.formatResponse(200, 'OK', data)
 		else:
-			project.save()
-
-		self.formatResponse(204, 'No Content', {})
+			data = {'error':'Unknown Error'}
+			self.formatResponse(500, 'Internal Server Error', data)
 
 	def postProjectQuit(self):
 		self.quit()
-		data = {}
-		self.formatResponse(204, 'No Content', data)
-
+		self.formatResponse(200, 'OK', {})
+# -------------------------------------------------#
+# -------------------- SYSINFO --------------------#
+# -------------------------------------------------#
 	def getSysInfoNumCpus(self):
 		data = {
 			'name': 'System CPU Count',
@@ -649,7 +885,9 @@ class ITRAP():
 			}
 		}
 		self.formatResponse(200, 'OK', data)
-
+# --------------------------------------------#
+# -------------------- UI --------------------#
+# --------------------------------------------#
 	def getUIMasterVolume(self):
 		data = {
 			'name': 'UI Master Volume',
@@ -678,6 +916,21 @@ class ITRAP():
 		}
 		self.formatResponse(200, 'OK', data)
 
+#------------------------------------------------------#
+#---------------------- MONITORS ----------------------#
+#------------------------------------------------------#
+	def get_monitor(self, index):
+
+		if index == None:
+			self.formatResponse(400, 'Bad Format', {})
+			return False
+		thisMonitor = monitors[index]
+		if thisMonitor:
+			return thisMonitor
+		else:
+			self.formatResponse(404, 'Resource Not Found', {})
+			return False
+		
 	def getMonitors(self):
 		monitorsData = []
 		monitorLinks = [
@@ -712,17 +965,13 @@ class ITRAP():
 		self.formatResponse(200, 'OK', data)
 	
 	def getMonitor(self):
-		params = self.parameters
-		index = int(params.get('mon'))
-		if index == None:
-			self.formatResponse(400, 'Bad Format', {})
-			return
-		thisMonitor = monitors[index]
+		index = int(self.parameters.get('mon'))
+		thisMonitor = self.get_monitor(index)
 		if thisMonitor:
 			data = {
-				'name':'Monitor',
+				'name':f'Monitor {index}',
 				'scope':'monitors.monitor',
-				'description':'',
+				'description':'Description of a monitor instance',
 				'built-in':True,
 				'data':{
 					'description':{
@@ -777,9 +1026,35 @@ class ITRAP():
 		else:
 			self.formatResponse(404, 'Resource Not Found', {})
 
+	def getMonitorAttribute(self):
+		thisMonitor = self.get_monitor()
+		attribute = self.parameters.get('attribute')
+		attribute_name = copy.copy(attribute)
+
+		if thisMonitor and attribute:
+			attribute = getattr(thisMonitor, attribute)
+			data = {
+				'name':f'Monitor {attribute_name}',
+				'scope':'monitors.monitor',
+				'description':'',
+				'built-in':True,
+				'data':{
+					'value':attribute,
+					'type':type(attribute).__name__ 
+				}
+			}
+			self.formatResponse(200, 'OK', data)
+		else:
+			self.formatResponse(404, 'Resource Not Found', {})
+
 	def postMonitorsRefresh(self):
-		return
-############# OPERATORS ############
+		monitors.refresh()
+		data = {}
+		self.formatResponse(204, 'No Content', {})
+
+#-------------------------------------------------------#
+#---------------------- OPERATORS ----------------------#
+#-------------------------------------------------------#
 
 	@handleGet(schemas['get_op'])
 	def getOp(self):
@@ -789,36 +1064,16 @@ class ITRAP():
 		if not operator:
 			self.formatResponse(404, 'Resource Not Found', {})
 			return
-
+		_id = operator.id
 		data = {
-			'name':'Operator',
+			'name':f'Operator {_id}',
 			'scope':'op',
 			'description':'',
 			'built-in':True,
-			'data':{
-				'id':operator.id,
-				'name':operator.name,
-				'path':operator.path,
-				'time':{
-					'path':operator.time.path,
-					'id':operator.time.id
-					},
-				'parent':{
-					'path':operator.parent().path,
-					'id':operator.parent().id
-					},
-				'type':{
-					'label':operator.label,
-					'family':operator.family,
-					'type':operator.type,
-					'subType':operator.subType,
-					'OPType':operator.OPType
-				}
-			},
+			'data':butils.jsonifyOp(operator),
 			'links':[]
 		}
 		self.formatResponse(200, 'OK', data)
-
 	@handler(schemas['post_op'])
 	def postOp(self, data):
 		name = data['name']
@@ -830,35 +1085,16 @@ class ITRAP():
 			return
 		
 		newOp = op(parent).create(_type, name)
+		_id = newOp.id
 
 		data = {
-			'name': 'Operator',
+			'name': f'Operator {_id}',
 			'scope': 'op',
 			'description':'',
 			'built-in':True,
-			'data': {
-				'id':newOp.id,
-				'name':newOp.name,
-				'path':newOp.path,
-				'time':{
-					'path':newOp.time.path,
-					'id':newOp.time.id
-					},
-				'parent':{
-					'path':newOp.parent().path,
-					'id':newOp.parent().id
-					},
-				'type':{
-					'label':newOp.label,
-					'family':newOp.family,
-					'type':newOp.type,
-					'subType':newOp.subType,
-					'OPType':newOp.OPType
-				}
-			}
+			'data': butils.jsonifyOp(newOp)
 		}
 		self.formatResponse(201, 'Created', data)
-
 	@handler(schemas['delete_op'])
 	def deleteOp(self, data):
 		path = data.get('path') or data.get('id')
@@ -872,10 +1108,60 @@ class ITRAP():
 			self.formatResponse(404, 'Not Found', data)
 		else:
 			op(path).destroy()
-			self.formatResponse(204, 'No Content')
+			self.formatResponse(204, 'No Content', {})
+	
+	@handleGet(schemas['get_op_attribute'])
+	def getOpAttribute(self):
+		path = self.parameters.get('path') or self.parameters.get('id')
+		attribute = self.parameters.get('attribute')
+		operator = op(path)
+		hasAttribute = hasattr(operator, attribute)
+
+		if operator and hasAttribute:
+			_id = operator.id
+			attributeVal = getattr(operator, attribute)
+			data = {
+				'name':f'Operator {_id} {attribute}',
+				'scope':'op.attribute',
+				'data':{'value':attributeVal,
+					'type':str(type(attributeVal).__name__)}
+			}
+			self.formatResponse(200, 'OK', data)
+		else:
+			data = {'error':'The operator or attribute does not exist.'}
+			self.formatResponse(404, 'Resource Not Found', data)
+	
+	@handleGet(schemas['put_op_attribute'])
+	def putOpAttribute(self):
+		path = self.parameters.get('path') or self.parameters.get('id')
+		attribute = self.parameters.get('attribute')
+		value = self.parameters.get('val')
+
+		operator = op(path)
+		if operator:
+			try:
+				_type = type(getattr(operator, attribute))
+				value = _type(value)
+				setattr(operator, attribute, value)
+			except Exception as e:
+				self.format500(error=type(e).__name__)
+				return
+
+			data = {
+				'name':'Operator Attribute',
+				'scope':'op.attribute',
+				'data':{
+					'value':value,
+					'type':str(type(value).__name__)
+				}
+			}
+
+			self.formatResponse(200, 'OK', data)
+		else:
+			self.formatResponse(404, 'Resource Not Found', {})
 
 	def getOpIdMap(self):
-		opIdMap = self.mapOperators()
+		opIdMap = butils.mapOperators()
 
 		data = {
 			'name': 'Operator Id Map',
@@ -943,15 +1229,20 @@ class ITRAP():
 		if not operator:
 			self.formatResponse(404, 'Resource Not Found', {})
 			return -1
-		operator.name = name
-
-		data = {
-			'success': {
-				'name': 'Operator',
-				'scope': 'op.name'
+		# check for duplicate
+		try:
+			operator.name = name
+		except tdError:
+			data = {'conflict':'Invalid or duplicate operator name.'}
+			self.formatResponse(409, 'Conflict', data)
+		else:
+			data = {
+				'success': {
+					'name': 'Operator',
+					'scope': 'op.name'
+				}
 			}
-		}
-		self.formatResponse(200, 'OK', data)
+			self.formatResponse(200, 'OK', data)
 
 	@handleGet(schemas['get_op_storage'])
 	def getOpStorage(self):
@@ -970,23 +1261,17 @@ class ITRAP():
 			'name': 'Operator Storage',
 			'scope': 'op.storage',
 			'description': '',
-			'data': {
-					'value': operator.storage,
-					'type': 'dict'
-			}
+			'data': {'value': operator.storage,
+					'type': 'dict'}
 		}
 		try:
 			code = 200
 			message = 'OK'
-			json.dumps(data)
+			data = json.dumps(data)
 		except Exception as e:
 			code = 500
 			message = 'Internal Server Error'
-			data = {
-				'error': {
-					'message': f'EXCEPTION: {str(e)}'
-				}
-			}
+			data = {'error': str(e)}
 		finally:
 			self.formatResponse(code, message, data)
 
@@ -1005,21 +1290,15 @@ class ITRAP():
 				'name': 'Operator Tags',
 				'scope': 'op.tags',
 				'description': '',
-				'data': {
-						'value': _tags,
+				'data': {'value': _tags,
 						'type': 'set',
-						'items': {
-							'type': 'str'
-						}
-				},
+						'items': {'type': 'str'}},
 				'operator_name': operatorName,
 				'operator_id': operatorId
 			}
 			self.formatResponse(200, 'OK', data)
 		else:
-			data = {
-				'error': f'NoneTypeError: op("{path}") does not exist.'
-			}
+			data = {'error': f'NoneTypeError: op("{path}") does not exist.'}
 			self.formatResponse(404, 'Resource Not Found', data)
 
 	@handler(schemas['post_op_tags'])
@@ -1086,6 +1365,11 @@ class ITRAP():
 				'error':'The operator or parameter does not exist.'
 			}
 			self.formatResponse(404, 'Resource Not Found', data)
+#-------------------------------------------------------------#
+#---------------------- NAMED OPERATORS ----------------------#
+#-------------------------------------------------------------#
+	def getNamedOps(self):
+		pass
 
 	@handleGet(schemas['get_named_op'])
 	def getNamedOp(self):
@@ -1095,7 +1379,9 @@ class ITRAP():
 		operator = op.NAPs.Ops(name)
 
 		data = {
-			'success': True
+			'success':{
+				'data':butils.jsonifyOp(operator)
+			}
 		}
 		self.formatResponse(200, 'OK', data)
 
@@ -1104,22 +1390,25 @@ class ITRAP():
 		params = self.parameters
 		name = params.get('name')
 		attribute = params.get('attribute')
-
 		operator = op.NAPs.Ops(name)
-		attributeVal = getattr(operator, attribute)
+		hasAttribute = hasattr(operator, attribute)
 
-		data = {
-			'name': 'Operator Attribute',
-			'scope': 'op.attribs',
-			'description': '',
-			'built-in': False,
-			'data': {
+		if operator and hasAttribute:
+			attributeVal = getattr(operator, attribute)
+			data = {
+				'name': f'{name} {attribute}',
+				'scope': 'namedOps.attributes',
+				'description': '',
+				'built-in': False,
+				'data': {
 					'value': attributeVal,
 					'type': type(attributeVal).__name__
+				}
 			}
-		}
-
-		self.formatResponse(200, 'OK', data)
+			self.formatResponse(200, 'OK', data)
+		else:
+			data = {'error':'The operator or attribute does not exist.'}
+			self.formatResponse(404, 'Resource Not Found', data)
 
 	@handleGet(schemas['put_named_op_attribute'])
 	def putNamedOpAttribute(self):
@@ -1142,25 +1431,18 @@ class ITRAP():
 				}
 			}
 			self.formatResponse(200, 'OK', data)
+		except ValueError as ve:
+			data = {
+				'error': {'message': 'ValueError: Value could not be coerced to the Attribute\'s type'}
+			}
+			self.formatResponse(400, 'Bad Request', data)
+		except AttributeError as ae:
+			data = {
+				'error': {'message': 'AttributeError: It is likely that the attribute is not writable.'}
+			}
+			self.formatResponse(400, 'Bad Request', data)
 		except Exception as e:
-			if e == ValueError:
-				data = {
-					'error': {
-						'message': 'ValueError: Value could not be coerced to the Attribute\'s type'
-					}
-				}
-			elif e == AttributeError:
-				data = {
-					'error': {
-						'message': 'AttributeError: It is likely that the attribute is not writable.'
-					}
-				}
-			else:
-				data = {
-					'error': {
-						'message': 'UnknownError'
-					}
-				}
+			data = {'error': {'message': 'UnknownError'}}
 			self.formatResponse(500, 'Internal Server Error', data)
 
 	@handleGet(schemas['get_named_op_par'])
@@ -1178,91 +1460,80 @@ class ITRAP():
 			'description': '',
 			'built-in': False,
 			'data': {
-					'value': parVal,
-					'type': type(parVal).__name__
+				'value': parVal,
+				'type': type(parVal).__name__
 			}
 		}
 		self.formatResponse(200, 'OK', data)
+	
+	@handleGet(schemas['put_named_op_par'])
+	def putNamedOpPar(self):
+		params = self.parameters
+		name = params.get('name')
+		par = params.get('par')
+		value = params.get('val')
+		operator = op.NAPs.Ops(name)
+		if operator:
+			opPar = operator.par[par]
+			if opPar:
+				try:
+					opPar.val = value
+				except:
+					pass
 
-	def HandleRequest(self, request, response):
-		self.request = request
-		self.response = response
-		self.parameters = request['pars']
-		uri = request['uri']
-		method = request['method']
-
-		self.token = request.get('Authorization')
-
-		if not self.token:
-			self.formatResponse(401, 'Not Authorized', {})
-			return self.response
-
-		else:
-			try: 
-				self.token = self.token.split(' ')[1]
-				print(self.token)
-			except:
-				self.formatResponse(400, 'Bad Format', {})
-		
-		self.permission = me.parent().storage['Permissions'].get(self.token)
-		if not self.permission:
-			self.formatResponse(401, 'Not Authorized', {})
-			return self.response
-		
-		self.response['content-type'] = 'application/json'
-		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
-
-		handler, params, scope = self.routing_tree.find(uri, method)
-
-		permitted = self.permission.validatePermission(scope)
-
-		if params:
-			# self.parameters = params
-			self.parameters.update(params)
-
-		if uri.split('/')[2] == 'monkey':
-			handler(self)
-		else:
-			handler()
-
-		return self.response
-
-	def format500(self, data=None, error='unknown'):
-		if not data:
 			data = {
-				'error': {
-					'message': f'Server encountered an exception while encoding return data.',
-					'exception': error
+				'success':{}
+			}
+
+			self.formatResponse(200, 'OK', data)
+		else:
+			self.formatResponse(404, 'Resource Not Found', {})
+#--------------------------------------------------------------#
+#---------------------- NAMED PARAMETERS ----------------------#
+#--------------------------------------------------------------#
+	def getNamedPars(self):
+		pass
+	
+	@handleGet(schemas['get_named_par'])
+	def getNamedPar(self):
+		params = self.parameters
+		name = params.get('name')
+		par = op.NAPs.Pars(name)
+		if par:
+			value = par.val
+			data = {
+				'name':name,
+				'scope':'namedPars',
+				'description':'',
+				'data':{
+					'value':value,
+					'type':type(value).__name__
 				}
 			}
-		self.response['statusCode'] = 500
-		self.response['statusReason'] = 'Internal Server Error'
-		self.response['data'] = data
-
-	def formatResponse(self, code, reason, data={}):
-		try:
-			data = json.dumps(data)
-		except Exception as e:
-			self.format500(error=str(e))
-
-		finally:
-			self.response["statusCode"] = code
-			self.response["statusReason"] = reason
-			self.response["data"] = data
-
-	def formatSuccess(self, data):
-
-		self.response['statusCode'] = 200
-		self.response['statusReason'] = 'OK'
-		responseData = {
-			'success': True,
-			'data': data
-		}
-		data = json.dumps(responseData)
-
-		self.response['data'] = data
-
-	def InsertRoute(self, url: str, handlers: dict):
-		self.url = url
-		url = '/api/monkey' + url
-		self.routing_tree.insert(url, handlers)
+			self.formatResponse(200, 'OK', data)
+		else:
+			data = {
+				'error':f'{name} is not a Named Parameter.'
+			}
+			self.formatResponse(404, 'Resource Not Found', data)
+	@handleGet(schemas['put_named_par'])
+	def putNamedPar(self):
+		params = self.parameters
+		name = params.get('name')
+		value = params.get('val')
+		par = op.NAPs.Pars(name)
+		if par:
+			_type = type(getattr(par, 'val'))
+			try:
+				value = _type(value)
+			except:
+				data = {
+					'error':'Value could not be coerced to the appropriate type'
+				}
+				self.formatResponse(422, 'Unprocessable Content', data)
+			else:
+				par.val = value
+				data = {
+					'success':{}
+				}
+				self.formatResponse(200, 'OK', data)

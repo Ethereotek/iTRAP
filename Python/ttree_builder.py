@@ -1,6 +1,5 @@
 import re
 
-
 class TrieNode:
 	def __init__(self):
 		self.name = 'root'
@@ -32,10 +31,6 @@ class Trie:
 				node = node.children[name]		# go to next Node, the one that was just created
 				node.name = name
 			else:
-					# if segment is not a child of current node, 
-					# 	add it as a child, then switch to that node
-				# print('node name = ', node.name)
-				# print('segment = ', segment)
 				if segment not in node.children:	
 					node.children.update({segment: TrieNode()})
 
@@ -46,8 +41,7 @@ class Trie:
 		node.handlers = handlers
 		node.scope = scope
 
-		# print(node.handlers)
-	def find(self, path: str, method: str):
+	def find(self, path: str):
 		node = self.root
 		path = path.strip('/')
 		params = {}
@@ -70,7 +64,8 @@ class Trie:
 			numSegments -= 1
 
 
-		return node.handlers.get(method), params, node.scope
+		# return node.handlers.get(method), params, node.scope
+		return node, params
 
 
 

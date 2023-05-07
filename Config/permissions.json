@@ -1,1 +1,26 @@
-{"admin": {"scopes": ["app.*", "project.*", "namedOp.*", "monitors.*", "project.*", "ui.*", "namedPars.*"], "key": "077e59d8-eae5-11ed-9df1-9cfce837ddb7"}}
+{
+	"admin": {
+		"scopes": [
+			"app.*",
+			"project.*",
+			"ops.*",
+			"namedOps.*",
+			"monitors.*",
+			"project.*",
+			"ui.*",
+			"namedPars.*"
+		],
+		"key": "dfaca1f7-ec6b-11ed-ac7e-9cfce837ddb7"
+	},
+	"user": {
+		"scopes": [
+			"app.*",
+			"project.*"
+		],
+		"exclusions": [
+			"app.*.put",
+			"project.*.put"
+		],
+		"key": "730ad25e-ec69-11ed-9e45-9cfce837ddb7"
+	}
+}

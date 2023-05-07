@@ -1,49 +1,69 @@
 openapi: 3.0.3
 info:
-  title: iTRAP - Touch Remote API 1.0.0
+  title: Banana - Touch Remote API 1.0.0
   description: |-
-    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
-    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
-    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
-    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+    The Banana API provides an interface for remote access to and control of a TouchDesigner instance by
+    wrapping much of the Python API and through NAPs, which simplifies access to operators and their parameters. 
 
-    _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_
-    
-    Some useful links:
-    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
-    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.11
+  version: 1.0.0
 externalDocs:
-  description: Find out more about Swagger
-  url: http://swagger.io
+  description: GitHub Repository
+  url: https://github.com/Ethereotek/iTRAP
 servers:
-  - url: http://localhost:29980/api/v1
-  - url: http://192.168.50.23:29980/api/v1
+  - url: http://localhost:29980/api/banana
+  - url: http://192.168.50.23:29980/api/banana
 tags:
+  - name: permissions
+    description: Information about the scopes assigned to the api key passed in the header
   - name: application
-    description: ''
+    description:  Information about the TouchDesigner Application, including version, transport state, etc.
     externalDocs:
-      description: Find out more
-      url: http://swagger.io
+      description: Derivative Documentation
+      url: https://docs.derivative.ca/App_Class
   - name: project
-    description: ''
+    description: Information about the current TouchDesigner session
     externalDocs:
-      description: Find out more about our store
-      url: http://swagger.io
-  - name: sys_info
-    description: Operations about user
+      description: Derivative Documentation
+      url: https://docs.derivative.ca/Project_Class
+  - name: sysinfo
+    description: Current system and hardware information
   - name: ui
   - name: monitors
+    description: Access to information about all connected display devices
   - name: operators
+    description: Access and perform methods on all operators
   - name: named operators
+    description: Access and perform methods on operators that have been aliased using NAPs
   - name: named parameters
+    description: Access and perform methods on parameters that have been aliased using NAPs
 paths:
+  /permission:
+    get:
+      tags:
+        - permissions
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scopes:
+                    type: array
+                    items:
+                      anyOf:
+                        - type: string
+                          enum:
+                            - app.*
+                  exclusions:
+                    type: array
+                    items:
+                      anyOf:
+                        - type: string
+                          enum:
+                            - app.*.put
+                            - project.*.post
   /app/architecture:
     get:
       tags:
@@ -63,7 +83,7 @@ paths:
                   name: 
                     type: string
                     default: Application Architecture
-                  id: 
+                  scope: 
                     type: string
                     default: app.architecture
                   description: 
@@ -83,7 +103,17 @@ paths:
                         type: string
                         enum:
                           - int
-
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: 'self'
+                        href:
+                          type: string
+                          default: http://localhost:29980/api/banana/app/architecture
   /app/build:
     get:
       tags:
@@ -100,23 +130,45 @@ paths:
               schema:
                 type: object
                 properties:
+                  name:
+                    type: string
+                    default: Application Build
+                  scope:
+                    type: string
+                    default: app.build
+                  description:
+                    type: string
+                    default: Application build number
+                  built-in:
+                    type: boolean
+                    default: true
                   data:
-                    type: string
-                    default: '2022.32660'
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                        default: '2022.32660'
+                      type:
+                        type: string
+                        default: 'str'
                   links:
-                    type: string
-                    enum: 
-                      - api/app/build
-
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/app/build
   /app/launchTime:
     get:
       tags:
         - application
-      summary: Returns time to start .toe fil
+      summary: Returns time to start .toe file
       description: Total time required to launch and begin playing the toe file, measured in seconds
       operationId: app.launchTime
-
-
       responses:
         '200':
           description: successful operation
@@ -127,46 +179,185 @@ paths:
                 properties:
                   name: 
                     type: string
-                  id:
+                    default: Application Launch Time
+                  scope:
                     type: string
+                    default: app.launchTime
                   description: 
                     type: string
+                    default: Total time required to launch and begin playing the toe file, measured in seconds.
                   built-in:
                     type: boolean
+                    default: true
                   data:
                     type: object
                     properties:
                       value:
                         type: number
+                        default: 7.893428
                         minimum: 0.0
                       type:
                         type: string
-                        
-
-
+                        default: 'float'
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href:
+                          type: string
+                          default: http://localhost:29980/api/banana/app/launchTime
+  /app/startTimestamp:
+    get:
+      tags:
+        - application
+      summary: Returns time at which a .toe file started
+      description: ''
+      operationId: app.startTimestamp
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Application Start Timestamp
+                  scope:
+                    type: string
+                    default: app.startTimestamp
+                  description: 
+                    type: string
+                    default: UNIX timestamp recorded when the application starts.
+                  built-in:
+                    type: boolean
+                    default: false
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: number
+                        default: 1682977375.6273248
+                        minimum: 0.0
+                      type:
+                        type: string
+                        default: 'float'
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href:
+                          type: string
+                          default: http://localhost:29980/api/banana/app/startTimestamp
   /app/osName:
     get:
       tags:
         - application
-      summary: Find pet by ID
-      description: Returns a single pet
+      summary: Return the operating system name.
+      description: The operating system name.
       operationId: app.osName
 
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: Application OS Name
+                  scope:
+                    type: string
+                    default: app.osName
+                  description:
+                    type: string
+                    default: The operating system name.
+                  built-in:
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                        default: 'Windows'
+                      type:
+                        type: string
+                        default: 'str'
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/app/osName
   /app/power:
     get:
       tags:
         - application
+      summary: Get the processing state of the application.
+      description: The processing state of the application has a greater effect than simply pausing or stopping the playbar.
+      operationId: app.power
       responses:
         '200':
-          description: 'OK'
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: Application Power
+                  scope:
+                    type: string
+                    default: app.power
+                  description:
+                    type: string
+                    default: Processing state of the application. This has a greater effect than simply pausing or stopping the playbar.
+                  built-in:
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: boolean
+                        default: true
+                      type:
+                        type: string
+                        default: 'bool'
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/app/power
     put:
       tags:
         - application
-      summary: uploads an image
-      description: ''
+      summary: Set the power state of the application.
+      description: The power state has a greater effect than the transport control. Note that if you turn off the power, you cannot turn it back on with an API call.
       requestBody:
         content:
           application/json:
@@ -178,11 +369,46 @@ paths:
                   enum:
                     - on
                     - off
-        
-
+      
       responses:
         '200':
-          description: successful operation
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        default: Application Power
+                      scope:
+                        type: string
+                        default: app.power
+                      data:
+                        type: object
+                        properties:
+                          value:
+                            type: boolean
+                            default: true
+                          type:
+                            type: string
+                            default: boolean
+                      links:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            rel:
+                              type: string
+                              default: self
+                            href: 
+                              type: string
+                              default: http://localhost:29980/api/banana/app/power
+        '400':
+          $ref: '#/components/responses/400'
   /app/product:
     get:
       tags:
@@ -201,7 +427,7 @@ paths:
                   name:
                     type: string
                     default: Application Product
-                  id:
+                  scope:
                     type: string
                     default: app.product
                   description:
@@ -222,7 +448,17 @@ paths:
                       type:
                         type: string
                         default: str
-
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/app/product
   /app/version:
     get:
       tags:
@@ -242,7 +478,7 @@ paths:
                   name:
                     type: string
                     default: Application Version
-                  id:
+                  scope:
                     type: string
                     default: app.version
                   description:
@@ -264,7 +500,17 @@ paths:
                       type:
                         type: string
                         default: str
-
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/app/version
   /app/play:
     get:
       tags:
@@ -274,6 +520,43 @@ paths:
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Application Transport State
+                  scope: 
+                    type: string  
+                    default: app.play
+                  description:
+                    type: string
+                    default: Indicates whether the application is playing or stopped.
+                  built-in:
+                    type: boolean
+                    default: false
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        default: 1
+                      type:
+                        type: string
+                        default: int
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/app/play                
     put:
       tags:
         - application
@@ -285,11 +568,49 @@ paths:
               type: object
               properties:
                 play:
-                  type: boolean
+                  type: integer
+                  minimum: -1
+                  maximum: 1
                   
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties:
+                      name: 
+                        type: string
+                        default: Application Transport State
+                      scope: 
+                        type: string
+                        default: app.play
+                      description: 
+                        type: string
+                        default: Indicates whether the application is playing or stopped.
+                      data:
+                        type: integer
+                        default: 1
+                        minimum: -1
+                        maximum: 1
+                      links:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            rel:
+                              type: string
+                              default: self
+                            href: 
+                              type: string
+                              default: http://localhost:29980/api/banana/app/play                    
+        '400':
+          $ref: '#/components/responses/400'
+  
   /project/name:
     get:
       tags:
@@ -297,70 +618,410 @@ paths:
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Name
+                  scope: 
+                    type: string
+                    default: project.name
+                  description: 
+                    type: string
+                    default: The filename under which the project is saved.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                    
+                      value: 
+                        type: string
+                        default: dev.toe
+                      type: 
+                        type: string
+                        default: str
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                      
+                        rel: 
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://192.168.50.23:29980/api/banana/project/name
   /project/saveVersion:
     get:
       tags:
         - project
+      summary: Get the App version when project was last saved.
+      description: The App version number when the project was last saved.
       responses:
         '200':
-          description: 'OK'        
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Save Version
+                  scope: 
+                    type: string
+                    default: project.saveVersion
+                  description: 
+                    type: string
+                    default: The App version number when the project was last saved.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                    
+                      value: 
+                        type: string
+                        default: '099'
+                      type: 
+                        type: string
+                        default: str
   /project/saveBuild:
     get:
       tags:
         - project
       responses:
         '200':
-          description: 'OK'            
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Save Build
+                  scope: 
+                    type: string
+                    default: project.saveBuild
+                  description: 
+                    type: string
+                    default: The App build number when the project was last saved.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                    
+                      value: 
+                        type: string
+                        default: '2022.32660'
+                      type: 
+                        type: string
+                        default: str        
   /project/saveTime:
     get:
       tags:
         - project
       responses:
         '200':
-          description: 'OK'  
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Save Time
+                  scope: 
+                    type: string
+                    default: project.saveTime
+                  description: 
+                    type: string
+                    default: The time and date the project was last saved.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                    
+                      value: 
+                        type: string
+                        default: 'Thu May  4 21:34:54 2023'
+                      type: 
+                        type: string
+                        default: datetime
   /project/saveOSName:
     get:
       tags:
         - project
       responses:
         '200':
-          description: 'OK' 
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Save OS Name
+                  scope: 
+                    type: string
+                    default: project.saveOSName
+                  description: 
+                    type: string
+                    default: The App operating system name when the project was last saved.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                        default: Windows
+                      type: 
+                        type: string
+                        default: str
   /project/saveOSVersion:
     get:
       tags:
         - project
       responses:
         '200':
-          description: 'OK'  
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                
+                  name: 
+                    type: string
+                    default: Project Save OS Version
+                  scope: 
+                    type: string
+                    default: project.saveOSVersion
+                  description: 
+                    type: string
+                    default: The App operating system version when the project was last saved.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value: 
+                        type: string
+                        default: '10'
+                      type:
+                        type: string
+                        default: str
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel: 
+                          type: string
+                          default: self
+                        href: 
+                          type: string
+                          default: http://localhost:29980/api/banana/project/saveOSVersion
   /project/paths:
     get:
       tags:
         - project
       responses:
         '200':
-          description: 'OK'  
-  /project/cookRate:
-    get:
-      tags:
-        - project
-      responses:
-        '200':
-          description: 'OK'  
-          
-  /project/realTime:
-    get:
-      tags:
-        - project
-      responses:
-        '200':
           description: 'OK'
-    
     put:
       tags:
         - project
       responses:
         '200':
           description: 'OK'
+  /project/paths/new:
+    post:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+  /project/paths/{path}:
+      put:
+        tags:
+          - project
+        parameters:
+          - name: path
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: 'OK'
+  /project/cookRate:
+    get:
+      tags:
+        - project
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Cook Rate
+                  scope: 
+                    type: string
+                    default: project.cookRate
+                  description: 
+                    type: string
+                    default: The maximum number of frames processed each second.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value: 
+                        type: number
+                        default: 60
+                      type: 
+                        type: string
+                        default: float
+                  
+    put:
+      tags:
+        - project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rate:
+                  type: number
+                  minimum: 1
+                  default: 60
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties:
+                      name: 
+                        type: string
+                        default: Project Cook Rate
+                      scope: 
+                        type: string
+                        default: project.cookRate
+                      data:
+                        type: object
+                        properties:
+                          value: 
+                            type: number
+                            default: 60
+                          type: 
+                            type: string
+                            default: float
+        '400':
+          $ref: '#/components/responses/400'
+  /project/realTime:
+    get:
+      tags:
+        - project
+      summary: Get the real time cooking state.
+      description: 'When True, frames may be skipped in order to maintain the cookRate. When False, all frames are processed sequentially regardless of duration.'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Project Realtime
+                  scope: 
+                    type: string
+                    default: project.realTime
+                  description: 
+                    type: string
+                    default: The maximum number of frames processed each second.
+                  built-in: 
+                    type: boolean
+                    default: true
+                  data:
+                    type: object
+                    properties:
+                      value: 
+                        type: number
+                        default: 60
+                      type: 
+                        type: string
+                        default: float    
+    put:
+      tags:
+        - project
+      summary: Set the real time cooking state.
+      description: 'When True, frames may be skipped in order to maintain the cookRate. When False, all frames are processed sequentially regardless of duration.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                realTime:
+                  type: boolean
+
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties: 
+                      name: 
+                        type: string
+                        default: Project Real Time
+                      scope: 
+                        type: string
+                        default: project.realTime
+                      data:
+                        type: object
+                        properties:
+                          value: 
+                            type: boolean
+                            default: true
+                          type: 
+                            type: string
+                            default: bool
   /project/performOnStart:
     get:
       tags:
@@ -404,14 +1065,30 @@ paths:
       responses:
         '200':
           description: 'OK'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
   /project/save:
-
     post:
       tags:
         - project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path: 
+                  type: string
+                  example: 'C:\Users\Documents\default.toe'
       responses:
-        '200':
-          description: 'OK'
+        '204':
+          description: 'No Content'
+          content:
+            application/json:
+              schema:
+                type: object
   /project/quit:
 
     post:
@@ -420,69 +1097,79 @@ paths:
       responses:
         '200':
           description: 'OK'
-  /sys_info/numCPUs:
+  /sysinfo/numCPUs:
     get:
       tags:
-        - sys_info
+        - sysinfo
+      summary: ''
+      description: The number of CPUs/cores on the system.
       responses:
         '200':
           description: 'OK'
-  /sys_info/ram:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum:
+                      - System CPU Count
+                  scope:
+                    type: string
+                    enum:
+                      - sysinfo.numCPUs
+                  description: 
+                    type: string
+                    enum:
+                      - The number of CPUs/cores on the system.
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        minimum: 2
+                        example: 8
+                      type:
+                        type: string
+                        enum:
+                          - int
+  /sysinfo/ram:
     get:
       tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK' 
-  /sys_info/numMonitors:
-    get:
-      tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK' 
-  /sys_info/xres:
-    get:
-      tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK' 
-  /sys_info/yres:
-    get:
-      tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK'  
-  /sys_info/res:
-    get:
-      tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK' 
-  /sys_info/tfs:
-    get:
-      tags:
-        - sys_info
+        - sysinfo
       responses:
         '200':
           description: 'OK'
-  /sys_info/MIDIInputs:
-    get:
-      tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK'
-  /sys_info/MIDIOutputs:
-    get:
-      tags:
-        - sys_info
-      responses:
-        '200':
-          description: 'OK' 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum:
+                      - System RAM
+                  scope:
+                    type: string
+                    enum:
+                      - sysinfo.ram
+                  description: 
+                    type: string
+                    enum:
+                      - Amount of available RAM memory.
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        minimum: 0
+                        example: 34299
+                      type:
+                        type: string
+                        enum:
+                          - int
+ 
   /ui/masterVolume:
     get:
       tags:
@@ -507,87 +1194,380 @@ paths:
       responses:
         '200':
           description: 'OK'
-  /monitors/width:
+  /monitors:
     get:
       tags:
         - monitors
       responses:
         '200':
           description: 'OK'
-  /monitors/height:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum:
+                      - Monitors
+                  scope:
+                    type: string
+                    enum:
+                      - monitors
+                  description:
+                    type: string
+                    enum:
+                      - Monitors connected to machine
+                  built-in:
+                    type: boolean
+                    enum:
+                      - true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            index:
+                              type: integer
+                          example:
+                            name: "\\\\.\\Display1"
+                            description: Asus VP247
+                            index: 0
+
+  /monitors/monitor/{monitor}:
     get:
       tags:
         - monitors
+      parameters:
+        - name: monitor
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: 'OK'
-  /monitors/numMonitors:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Monitor
+                  scope:
+                    type: string
+                    enum:
+                      - monitors.monitor
+                  description:
+                    type: string
+                    enum:
+                      - Description of a monitor instance
+                  built-in:
+                    type: boolean
+                    enum:
+                      - true
+                  data:
+                    type: object
+                    properties:
+                      description:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                            example: ASUS VP247
+                          type:
+                            type: string
+                            enum:
+                              - str
+                          isPrimary:
+                            type: object
+                            properties:
+                              value:
+                                type: boolean
+                              type:
+                                type: string
+                                enum:
+                                  - str
+                          resolution:
+                            type: object
+                            properties:
+                              width:
+                                type: object
+                                properties:
+                                  value:
+                                    type: integer
+                                    example: 1920
+                                  type:
+                                    type: string
+                                    enum:
+                                      - str
+                              height:
+                                type: object
+                                properties:
+                                  value:
+                                    type: integer
+                                    example: 1080
+                                  type:
+                                    type: string
+                                    enum:
+                                      - str
+                          position:
+                            type: object
+                            properties:
+                              left:
+                                type: object
+                                properties:
+                                  value:
+                                    type: integer
+                                    example: 0
+                                  type:
+                                    type: string
+                                    enum:
+                                      - int
+                              right:
+                                type: object
+                                properties:
+                                  value:
+                                    type: integer
+                                    example: 1919
+                                  type:
+                                    type: string
+                                    enum:
+                                      - int
+                              top:
+                                type: object
+                                properties:
+                                  value:
+                                    type: integer
+                                    example: 1079
+                                  type:
+                                    type: string
+                                    enum:
+                                      - int
+                              bottom:
+                                type: object
+                                properties:
+                                  value:
+                                    type: integer
+                                    example: 0
+                                  type:
+                                    type: string
+                                    enum:
+                                      - int
+                          refreshRate:
+                            type: object
+                            properties:
+                              value:
+                                type: number
+                                example: 59.94005
+                              type:
+                                type: string
+                                enum:
+                                  - float
+
+                              
+  /monitors/monitor/{monitor}/{attribute}:
     get:
       tags:
         - monitors
+      parameters:
+        - name: monitor
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: attribute
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - isPrimary
+              - isAffinity
+              - width
+              - height
+              - left
+              - right
+              - top
+              - bottom
+              - displayName
+              - description
+              - dpiSacle
+              - scaledWidth
+              - scaledHeight
+              - scaledLeft
+              - scaledRight
+              - scaledTop
+              - scaledBottom
+              - serialNumber
+            
       responses:
         '200':
           description: 'OK'
-  /monitors/refresh:
-    post:
+  
+  /op/opIdMap:
+    get:
       tags:
-        - monitors
+        - operators
+      summary: Get a mapping of operator paths to id's
+      description: The Op-ID map selectively exposes operator ID's, this object can be used to get the ID's of target operators.
       responses:
         '200':
-          description: 'OK'         
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
   /op:
     get:
       tags:
         - operators
       summary: Get an operator dictionary
-      description: Returns all attributes of an operator as a JSON object; either the absolute path or the id must be provided as a query parameter.
+      description: Returns useful attributes of an operator as a JSON object; either the absolute path or the id must be provided as a query parameter.
       parameters:
-        - $ref: '#/components/parameters/QueryParameter'
-        - name: id
-          required: false
-          in: query
-          schema:
-            type: integer
-          description: Unique integer ID; not consistent between file loads or copy/paste operations
-        
+        - $ref: '#/components/parameters/QueryPath'
+        - $ref: '#/components/parameters/QueryId'
+
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum: 
+                      - Operator
+                  scope: 
+                    type: string
+                    enum:
+                      - op
+                  description: 
+                    type: string
+                    enum:
+                      - ''
+                  built-in: 
+                    type: boolean
+                    enum: 
+                      - true
+                  data:
+                    type: object
+                    properties:
+                      id: 
+                        type: integer
+                        minimum: 0
+                        example: 5972
+                      name: 
+                        type: string
+                        example: project1
+                      path: 
+                        type: string
+                        example: /project1
+                      time:
+                        type: object
+                        properties: 
+                          path: 
+                            type: string
+                            example: /local/time
+                          id: 
+                            type: integer
+                            example: 6246
+                      parent:
+                        type: object
+                        properties:
+                          path: 
+                            type: string
+                            example: /
+                          id: 
+                            type: integer
+                            example: 0
+                      type:
+                        type: object
+                        properties: 
+                          label: 
+                            type: string
+                            example: Container
+                          family: 
+                            type: string
+                            example: COMP
+                          type: 
+                            type: string
+                            example: container
+                          subType: 
+                            type: string
+                            example: panel
+                          OPType: 
+                            type: string
+                            example: containerCOMP
+
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
     post:
       tags:
         - operators
       summary: Create an operator
-      parameters:
-        - name: name
-          required: true
-          in: query
-          schema:
-            type: string
-        - name: type
-          required: true
-          in: query
-          schema:
-            type: string
-        - name: parent
-          required: true
-          in: query
-          schema:
-            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - type
+              - parent
+              properties:
+                name: 
+                  type: string
+                  example: operator_name
+                type:
+                  type: string
+                  example: textDAT
+                parent:
+                  type: string
+                  example: /project1
+
       responses:
-        '200':
-          description: 'OK'
+        '201':
+          description: 'Created'
+        '400':
+          $ref: '#/components/responses/400'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conflict:
+                    type: string
+                    enum:
+                      - Parent does not exist
     delete:
       tags:
         - operators
       summary: Destroys an operator
+
       responses:
         '200':
           description: 'OK'
-  /op/attribute:
+          
+  /op/attributes/{attribute}:
     get:
       tags:
         - operators
-      summary: Get operator
+      summary: Get operator attribute
       parameters:
         - name: path
           required: false
@@ -595,8 +1575,8 @@ paths:
           schema:
             type: string
         - name: attribute
-          required: false
-          in: query
+          required: true
+          in: path
           schema:
             type: string
         
@@ -613,8 +1593,8 @@ paths:
           schema:
             type: string
         - name: attribute
-          required: false
-          in: query
+          required: true
+          in: path
           schema:
             type: string
       responses:
@@ -625,36 +1605,90 @@ paths:
     get:
       tags:
         - operators
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 'OK'
-  /op/name:
-    get:
-      tags:
-        - operators
-      responses:
-        '200':
-          description: 'OK'
-    put:
-      tags:
-        - operators
-      responses:
-        '200':
-          description: 'OK'
-  /op/path:
-    get:
-      tags:
-        - operators
-      responses:
-        '200':
-          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: Operator ID
+                  scope:
+                    type: string
+                    enum:
+                      - op.id
+                  description:
+                    type: string
+                    enum:
+                      - Unique integer identifier.
+                  built-in:
+                    type: boolean
+                    enum:
+                      - true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        minimum: 0
+                        example: 6102
+                      type:
+                        type: string
+                        enum:
+                          - int
+
   /op/storage:
     get:
       tags:
         - operators
+      parameters:
+        - name: path
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: Operator Storage
+                  scope:
+                    type: string
+                    enum:
+                      - op.storage
+                  description:
+                    type: string
+                    enum:
+                      - ''
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: object
+                      type:
+                        type: string
+                        enum:
+                          - dict
   /op/tags:
     get:
       tags:
@@ -671,38 +1705,44 @@ paths:
           description: 'OK'
         '404':
           description: 'Resource Not Found'
+  /op/tags/{tag}:
     post:
       tags:
         - operators
+      parameters:
+        - name: tag
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: path
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: 'OK' 
     delete:
       tags:
         - operators
+      parameters:
+        - name: tag
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 'OK'
-  /op/bypass:
-    get:
-      tags:
-        - operators
-      responses:
-        '200':
-          description: 'OK'
-    put:
-      tags:
-        - operators
-      responses:
-        '200':
-          description: 'OK' 
+
   /op/par:
     get:
       tags:
         - operators
       summary: Get operator parameter
       parameters:
-        - $ref: '#/components/parameters/QueryParameterReq'
+        - $ref: '#/components/parameters/QueryPathReq'
         - name: par
           in: query
           required: true
@@ -856,41 +1896,96 @@ paths:
                         id:
                           type: number
                           default: 1234
+  /namedPars/par/{name}:
+    get:
+      tags:
+        - named parameters
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      tags:
+        - named parameters
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: val
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
             
 components:
   parameters:
-    QueryParameter:
+    QueryPath:
       name: path
       in: query
       description: Absolute path to the operator
       required: false
       schema:
         type: string
-    QueryParameterReq:
+    QueryPathReq:
       name: path
       in: query
       description: Absolute path to the operator
       required: true
       schema:
         type: string
-    BodyParameterReq:
+    BodyPathReq:
       name: path
       in: query
       description: Absolute path to the operator
       required: true
       schema:
         type: string
-        
+    
+    QueryId:
+      name: id
+      in: query
+      description: Unique integer ID of operator
+      required: false
+      schema:
+        type: integer
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                enum:
+                  - Missing params, or wrong type.
+                  - Bad JSON formatting.
+    '401':
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            type: object
+    '404':
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
+    api-key:
       type: apiKey
-      name: api_key
       in: header
+      name: Authorization

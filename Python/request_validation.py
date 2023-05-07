@@ -17,7 +17,10 @@ def validateTypes(pars, expected_pars):
 	for par, val in pars.items():
 	
 		expected_type = expected_pars[par]['type']
-		validType = validType and isinstance(val, expected_type)
+		if expected_type == 'any':
+			pass
+		else:
+			validType = validType and isinstance(val, expected_type)
 
 		if not validType:
 			try:

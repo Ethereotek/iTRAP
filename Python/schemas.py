@@ -43,6 +43,36 @@ schemas = {
         },
         'required': ['play']
     },
+    'post_project_path':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'path':{
+                'type':str
+            }
+        },
+        'required':['path','name']
+    },
+    'get_project_path':{
+        'parameters':{
+            'name':{
+                'type':str
+            }
+        },
+        'required':['name']
+    },
+    'put_project_path':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'path':{
+                'type':str
+            }
+        },
+        'required':['path', 'name']
+    },
     'put_project_cookRate': {
         'parameters': {
             'rate': {
@@ -103,6 +133,44 @@ schemas = {
             'name',
             'type',
             'parent'
+        ]
+    },
+    'get_op_attribute':{
+        'parameters':{
+            'path':{
+                'type':str
+            },
+            'id':{
+                'type':int
+            },
+            'attribute':{
+                'type':str
+            }
+        },
+        'required':[
+            ['id', 'path'],
+            'attribute'
+        ]
+    },
+    'put_op_attribute':{
+        'parameters':{
+            'path':{
+                'type':str
+            },
+            'id':{
+                'type':int
+            },
+            'attribute':{
+                'type':str
+            },
+            'val':{
+                'type':'any'
+            }
+        },
+        'required':[
+            ['id', 'path'],
+            'attribute',
+            'val'
         ]
     },
     'delete_op': {
@@ -224,6 +292,19 @@ schemas = {
         },
         'required':['name', 'par']
     },
+    'put_named_op_par':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'par':{
+                'type':str
+            },
+            'val':{
+                'type':'any'
+            }
+        }
+    },
     'put_named_op_attribute':{
         'parameters':{
             'name':{
@@ -237,5 +318,24 @@ schemas = {
             }
         },
         'required':['name', 'attribute', 'value']
+    },
+    'get_named_par':{
+        'parameters':{
+            'name':{
+                'type':str
+            }
+        },
+        'required':['name']
+    },
+    'put_named_par':{
+        'parameters':{
+            'name':{
+                'type':str
+            },
+            'val':{
+                'type':'any'
+            }
+        },
+        'required':['name', 'val']
     }
 }
