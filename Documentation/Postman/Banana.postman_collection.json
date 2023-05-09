@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f2cf028a-4895-48c6-8121-d6bdd747cb1a",
+		"_postman_id": "c332522c-2a86-4030-926e-e57cc7d27acd",
 		"name": "Banana",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27046004"
@@ -15,7 +15,7 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "Content-Type",
+								"key": "content-type",
 								"value": "application/json",
 								"type": "text"
 							}
@@ -185,6 +185,37 @@
 					"response": []
 				},
 				{
+					"name": "XML Update Application Power Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<tag>\r\n</tag>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/app/power",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"app",
+								"power"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Application Product",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -305,7 +336,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"play\":true\r\n}",
+							"raw": "{\r\n\r\n    \"play\": 1\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -437,6 +468,75 @@
 			]
 		},
 		{
+			"name": "Named Parameters",
+			"item": [
+				{
+					"name": "Get Named Parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedPars/par/:name",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"namedPars",
+								"par",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "radx"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Named Parameter Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedPars/par/:name?val=2",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"namedPars",
+								"par",
+								":name"
+							],
+							"query": [
+								{
+									"key": "val",
+									"value": "2"
+								}
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "radx"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Operators",
 			"item": [
 				{
@@ -460,6 +560,131 @@
 								{
 									"key": "path",
 									"value": "/project1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Operator",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"my_brand_new_operator\",\r\n    \"parent\":\"/project1\",\r\n    \"type\":\"textDAT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"op"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operator Attribute",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/attributes/:attribute?path=/project1",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"op",
+								"attributes",
+								":attribute"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1"
+								}
+							],
+							"variable": [
+								{
+									"key": "attribute",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Operator Attribute",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/attributes/:attribute?path=/project1/None&val=hello_world",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"op",
+								"attributes",
+								":attribute"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1/None"
+								},
+								{
+									"key": "val",
+									"value": "hello_world"
+								}
+							],
+							"variable": [
+								{
+									"key": "attribute",
+									"value": "name"
 								}
 							]
 						}
@@ -523,7 +748,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":5999,\r\n    \"name\":\"Newer_Test\"\r\n}",
+							"raw": "{\r\n    \"path\":\"/project1/Newer_Test2\",\r\n    \"name\":\"Newer_Test1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -548,13 +773,16 @@
 					"response": []
 				},
 				{
-					"name": "Create Operator",
+					"name": "Operator ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"my_brand_new_operator\",\r\n    \"parent\":\"/project1\",\r\n    \"type\":\"textDAT\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -562,7 +790,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/op",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/id?path=/project1/hello_world",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -571,7 +799,14 @@
 							"path": [
 								"api",
 								"banana",
-								"op"
+								"op",
+								"id"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "/project1/hello_world"
+								}
 							]
 						}
 					},
@@ -602,46 +837,6 @@
 								"api",
 								"banana",
 								"op"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Operator ID",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/id?path=/project1/test",
-							"protocol": "http",
-							"host": [
-								"{{ip_address}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"banana",
-								"op",
-								"id"
-							],
-							"query": [
-								{
-									"key": "path",
-									"value": "/project1/test"
-								}
 							]
 						}
 					},
@@ -734,7 +929,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"new_tag\"]\r\n}",
+							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"test_tag\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -913,10 +1108,70 @@
 			"item": [
 				{
 					"name": "Monitor",
-					"item": []
+					"item": [
+						{
+							"name": "Monitor",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://192.168.50.23:29980/api/banana/monitors/monitor/0",
+									"protocol": "http",
+									"host": [
+										"192",
+										"168",
+										"50",
+										"23"
+									],
+									"port": "29980",
+									"path": [
+										"api",
+										"banana",
+										"monitors",
+										"monitor",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Monitor Attribute",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://192.168.50.23:29980/api/banana/monitors/monitor/0/:attribute",
+									"protocol": "http",
+									"host": [
+										"192",
+										"168",
+										"50",
+										"23"
+									],
+									"port": "29980",
+									"path": [
+										"api",
+										"banana",
+										"monitors",
+										"monitor",
+										"0",
+										":attribute"
+									],
+									"variable": [
+										{
+											"key": "attribute",
+											"value": "isPrimary"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				},
 				{
-					"name": "http://{{ip_address}}:29980/api/banana/monitors",
+					"name": "Monitors",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -931,6 +1186,28 @@
 								"api",
 								"banana",
 								"monitors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Monitors",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/monitors/refresh",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"monitors",
+								"refresh"
 							]
 						}
 					},
@@ -969,28 +1246,6 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/name",
-							"protocol": "http",
-							"host": [
-								"{{ip_address}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"banana",
-								"project",
-								"name"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Project Cook Rate",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
 							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/paths",
 							"protocol": "http",
 							"host": [
@@ -1002,6 +1257,94 @@
 								"banana",
 								"project",
 								"paths"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Path",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/paths/path/:name",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"paths",
+								"path",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "content"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Path",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/paths/path/:name?path=C:/Users/white/Documents/TouchDesigner/GAN/BernardMarx/Content/Ramses",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"paths",
+								"path",
+								":name"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "C:/Users/white/Documents/TouchDesigner/GAN/BernardMarx/Content/Ramses"
+								}
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "content"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Cook Rate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/cookRate",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"cookRate"
 							]
 						}
 					},
@@ -1104,6 +1447,111 @@
 								"banana",
 								"project",
 								"saveBuild"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Save Time",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/saveTime",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"saveTime"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Save OS Name",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/saveOSName",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"saveOSName"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Save OS Version",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/saveOSVersion",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"saveOSVersion"
 							]
 						}
 					},
@@ -1282,10 +1730,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n}"
+							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/save",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/save?path=dev",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1296,6 +1744,12 @@
 								"banana",
 								"project",
 								"save"
+							],
+							"query": [
+								{
+									"key": "path",
+									"value": "dev"
+								}
 							]
 						}
 					},
@@ -1314,7 +1768,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/quit",
@@ -1369,37 +1823,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Update UI Master Volume",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"volume\":1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/ui/masterVolume",
-							"protocol": "http",
-							"host": [
-								"{{ip_address}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"banana",
-								"ui",
-								"masterVolume"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -1435,7 +1858,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"volume\":1.0\r\n}",
+							"raw": "{\r\n    \"volume\":1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1497,6 +1920,113 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "SysInfo",
+			"item": [
+				{
+					"name": "System CPU Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/sysinfo/numCPUs",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"sysinfo",
+								"numCPUs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "System RAM",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/sysinfo/ram",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"sysinfo",
+								"ram"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Not Allowed Application Architecture",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{ip_address}}:{{port}}/api/banana/app/architecture",
+					"protocol": "http",
+					"host": [
+						"{{ip_address}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"banana",
+						"app",
+						"architecture"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

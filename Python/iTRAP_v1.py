@@ -9,7 +9,6 @@ request_validation = mod('request_validation')
 butils = mod('butils')
 
 permissions_config_dat = op('permissions_config')
-permissions_config = json.loads(permissions_config_dat.text)
 
 class ITRAP():
 	routing_table = {}
@@ -21,10 +20,11 @@ class ITRAP():
 		self.ip_address = thisComp.par.Ipaddress
 
 		if not self.thisComp.storage.get('Permissions'):
-			self.thisComp.store('Permissions',{})
+			self.thisComp.store('Permissions',{'keys':{},'users':{}})
 		print(thisComp)
 
 		self.routing_table = {
+			"/api/banana/permissions":{'handlers':{'GET':self.getPermissions}, 'scope':'permissions'},
 			"/api/banana/app/architecture": {'handlers': {'GET': self.getAppArchitecture}, 'scope': 'app.architecture'},
 			"/api/banana/app/build": {'handlers':{'GET': self.getAppBuild}, 'scope':'app.build'},
 			"/api/banana/app/launchTime": {'handlers':{'GET': self.getAppLaunchTime}, 'scope':'app.launchTime'},
@@ -68,7 +68,7 @@ class ITRAP():
 			"/api/banana/op/tags": {'handlers':{'GET': self.getOpTags, 'POST': self.postOpTags, 'DELETE': self.deleteOpTags}, 'scope':'op.tags'},
 			"/api/banana/op/par": {'handlers':{'GET': self.getOpPar, 'PUT': self.putOpPar}, 'scope':'op.par'},
 			"/api/banana/namedOps":{'handlers':{'GET':self.getNamedOps}, 'scope':'namedOps'},
-			"/api/banana/namedOps/op/<name>": {'handlers':{'GET': self.getNamedOp}, 'scope':'namedOp'},
+			"/api/banana/namedOps/op/<name>": {'handlers':{'GET': self.getNamedOp}, 'scope':'namedOps'},
 			"/api/banana/namedOps/op/<name>/attribute/<attribute>": {'handlers':{'GET': self.getNamedOpAttribute, 'PUT': self.putNamedOpAttribute}, 'scope':'namedOps.attribute'},
 			"/api/banana/namedOps/op/<name>/par/<par>": {'handlers':{'GET': self.getNamedOpPar,'PUT':self.putNamedOpPar}, 'scope':'namedOps.par'},
 			"/api/banana/namedPars":{'handlers':{'GET':self.getNamedPars}, 'scope':'namedPars'},
@@ -90,7 +90,7 @@ class ITRAP():
 
 		# if there is no token
 		if not self.token:
-			self.formatResponse(401, 'Not Authorized', {})
+			self.formatResponse(401, 'Not Authorized', {'error':'no token'})
 			return False
 
 		# if the token can't be unpacked
@@ -102,7 +102,7 @@ class ITRAP():
 				self.formatResponse(400, 'Bad Format', {})
 				return False
 		
-		permission = self.thisComp.storage['Permissions'].get(self.token)
+		permission = self.thisComp.storage['Permissions']['keys'].get(self.token)
 		return permission
 
 	def getTrieNode(self):
@@ -122,7 +122,7 @@ class ITRAP():
 
 		self.permission = self.getPermission()
 		if not self.permission:
-			self.formatResponse(401, 'Not Authorized', {})
+			self.formatResponse(401, 'Not Authorized', {'error':'no permissions found'})
 			return self.response
 
 		# handler, params, scope = self.routing_tree.find(uri, method)
@@ -140,7 +140,7 @@ class ITRAP():
 		permitted = self.permission.validatePermission(scope)
 
 		if not permitted:
-			self.formatResponse(401, 'Not Authorized', {})
+			self.formatResponse(401, 'Not Authorized', {'error':'not permitted'})
 			return self.response
 
 		# add the parameters collected from the URL parsing to self.parameters
@@ -173,19 +173,25 @@ class ITRAP():
 			self.response["statusReason"] = reason
 			self.response["data"] = data
 
-	def InsertRoute(self, url: str, handlers: dict):
+	def InsertRoute(self, url: str, handlers: dict, scope:str):
 		self.url = url
 		url = '/api/monkey' + url
-		self.routing_tree.insert(url, handlers)
-		
+		self.routing_tree.insert(url, handlers, scope)
+
 	def CreateKey(self, user):
+		permissions_config = json.loads(permissions_config_dat.text)
 		# create a permission object, which has a key
 		# assign key to the user, update configuration, and store key:permission in parent dict
 		permission = permissions.Permission(user, permissions_config)
 		key = permission.key
 		permissions_config[user].update({'key':permission.key})
 		permissions_config_dat.text = json.dumps(permissions_config)
-		self.thisComp.storage["Permissions"].update({key:permission})
+		permissions_dict = self.thisComp.storage["Permissions"]
+		if permissions_dict["users"].get(user):
+			current_key = permissions_dict["users"].get(user)
+			permissions_dict["keys"].pop(current_key)
+		permissions_dict['keys'].update({key:permission})
+		permissions_dict['users'].update({user:key})
 
 	def quit(self):
 		project.quit(force=True)
@@ -261,6 +267,26 @@ class ITRAP():
 # --------------------------------------------------------#
 # -------------------- BEGIN HANDLERS --------------------#
 # --------------------------------------------------------#
+
+# -----------------------------------------------------#
+# -------------------- PERMISSIONS --------------------#
+# -----------------------------------------------------#
+
+	def getPermissions(self):
+		permissionObject = self.thisComp.storage['Permissions']['keys'].get(self.token)
+		scopes = [scope.pattern for scope in permissionObject.scopes]
+		exclusions = permissionObject.exclusions
+		user = permissionObject.user
+		data = {
+			'name':f'{user} Permissions',
+			'scope':'permissions',
+			'description':'',
+			'data':{
+				'scopes':scopes,
+				'exclusions':exclusions
+			}
+		}
+		self.formatResponse(200, 'OK', data)
 
 # -----------------------------------------------------#
 # -------------------- APPLICATION --------------------#
@@ -1416,19 +1442,24 @@ class ITRAP():
 		name = params.get('name')
 		attribute = params.get('attribute')
 		value = params.get('value')
-
 		operator = op.NAPs.Ops(name)
 		_type = type(getattr(operator, attribute))
+
 		try:
-			value = _type(value)
+			if _type == bool:
+				value = butils.stringToBool(value)
+			else:
+				value = _type(value)
+
 			setattr(operator, attribute, value)
 			data = {
-				'name': 'Operator Attribute',
-				'scope': 'NAPs.Ops.attr',
-				'description': '',
-				'data': {
-						'success': True
-				}
+				'success':{				
+					'name': f'Operator {name} {attribute}',
+					'scope': 'namedOps.attributes',
+					'description': '',
+					'data': {'value': value,
+						'type':'bool'}
+					}
 			}
 			self.formatResponse(200, 'OK', data)
 		except ValueError as ve:
@@ -1459,10 +1490,8 @@ class ITRAP():
 			'scope': 'NAPs.Ops.par',
 			'description': '',
 			'built-in': False,
-			'data': {
-				'value': parVal,
-				'type': type(parVal).__name__
-			}
+			'data': {'value': parVal,
+				'type': type(parVal).__name__}
 		}
 		self.formatResponse(200, 'OK', data)
 	
@@ -1480,11 +1509,7 @@ class ITRAP():
 					opPar.val = value
 				except:
 					pass
-
-			data = {
-				'success':{}
-			}
-
+			data = {'success':{}}
 			self.formatResponse(200, 'OK', data)
 		else:
 			self.formatResponse(404, 'Resource Not Found', {})
@@ -1505,10 +1530,8 @@ class ITRAP():
 				'name':name,
 				'scope':'namedPars',
 				'description':'',
-				'data':{
-					'value':value,
-					'type':type(value).__name__
-				}
+				'data':{'value':value,
+					'type':type(value).__name__}
 			}
 			self.formatResponse(200, 'OK', data)
 		else:
@@ -1527,13 +1550,9 @@ class ITRAP():
 			try:
 				value = _type(value)
 			except:
-				data = {
-					'error':'Value could not be coerced to the appropriate type'
-				}
+				data = {'error':'Value could not be coerced to the appropriate type'}
 				self.formatResponse(422, 'Unprocessable Content', data)
 			else:
 				par.val = value
-				data = {
-					'success':{}
-				}
+				data = {'success':{}}
 				self.formatResponse(200, 'OK', data)

@@ -59,7 +59,7 @@ class Trie:
 				elif segment in node.children:
 					node = node.children[segment]
 				else:
-					return None, {}, ''
+					return None, {}
 			
 			numSegments -= 1
 

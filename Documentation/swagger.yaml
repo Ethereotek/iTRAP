@@ -1073,18 +1073,18 @@ paths:
     post:
       tags:
         - project
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                path: 
-                  type: string
-                  example: 'C:\Users\Documents\default.toe'
+      summary: Save the currently running project
+      description: Save the current session to disk. If `path` is not provided the default/current filename is used. 
+      parameters:
+        - name: path
+          in: query
+          required: false
+          schema:
+            type: string
+
       responses:
-        '204':
-          description: 'No Content'
+        '200':
+          description: 'OK'
           content:
             application/json:
               schema:
@@ -1694,15 +1694,40 @@ paths:
       tags:
         - operators
       parameters:
-        - name: path
-          in: query
-          required: true
-          schema:
-            type: string
-        
+        - $ref: '#/components/parameters/QueryPath'
+        - $ref: '#/components/parameters/QueryId'
+
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                    default: Operator Tags
+                  scope:
+                    type: string
+                    enum:
+                      - op.tags
+                  description:
+                    type: string
+                    enum:
+                      - ''
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: array
+                        items: 
+                          type: string
+                      type:
+                        type: string
+                        enum:
+                          - set
+                      
         '404':
           description: 'Resource Not Found'
   /op/tags/{tag}:
@@ -1715,14 +1740,34 @@ paths:
           required: true
           schema:
             type: string
-        - name: path
-          in: query
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/QueryPath'
+        - $ref: '#/components/parameters/QueryId'
+        
       responses:
-        '200':
-          description: 'OK' 
+        '201':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: 
+                    type: string
+                  scope:
+                    type: string 
+                    enum:
+                      - op.tags
+                  description:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                          - str
     delete:
       tags:
         - operators
@@ -1791,7 +1836,7 @@ paths:
                   operator_name:
                     type: string
                     default: path/to/operator
-  /namedOp/{name}:
+  /namedOps/op/{name}:
     get:
       tags:
         - named operators
@@ -1808,7 +1853,7 @@ paths:
             application/json:
               schema:
                 type: object
-  /namedOp/{name}/attribute/{attribute}:
+  /namedOps/op/{name}/attribute/{attribute}:
     get:
       tags:
         - named operators
@@ -1849,7 +1894,7 @@ paths:
       responses:
         '200':
           description: 'OK'
-  /namedOp/{name}/par/{par}:
+  /namedOps/op/{name}/par/{par}:
     get:
       tags:
         - named operators
@@ -1936,6 +1981,14 @@ components:
       required: false
       schema:
         type: string
+    QueryId:
+      name: id
+      in: query
+      description: Unique integer ID of operator
+      required: false
+      schema:
+        type: integer
+        
     QueryPathReq:
       name: path
       in: query
@@ -1951,13 +2004,7 @@ components:
       schema:
         type: string
     
-    QueryId:
-      name: id
-      in: query
-      description: Unique integer ID of operator
-      required: false
-      schema:
-        type: integer
+
   responses:
     '400':
       description: Bad Request

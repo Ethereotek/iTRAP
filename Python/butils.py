@@ -1,3 +1,7 @@
+import re
+
+truePattern = re.compile(r'[Tt]rue')
+falsePattern = re.compile(r'[Ff]alse')
 
 def jsonifyOp(operator):
 	jOp = {
@@ -25,6 +29,16 @@ def jsonifyOp(operator):
 def jsonifyTableRow(table, row=0, numCols=1):
 	for col in range(numCols):
 		pass
+
+def stringToBool(string):
+	if re.match(truePattern, string):
+		return True
+	elif re.match(falsePattern, string):
+		return False
+	else:
+		return None
+
+
 
 def mapOperators():
 
