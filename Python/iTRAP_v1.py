@@ -56,17 +56,17 @@ class ITRAP():
 			"/api/banana/monitors/monitor/<mon>":{'handlers':{'GET':self.getMonitor}, 'scope':'monitors.monitor'},
 			"/api/banana/monitors/monitor/<mon>/<attribute>":{'handlers':{'GET':self.getMonitorAttribute}, 'scope':'monitors.monitor'},
 			"/api/banana/monitors/refresh": {'handlers':{'POST': self.postMonitorsRefresh}, 'scope':'monitors.refresh'},
-			"/api/banana/op": {'handlers':{'GET': self.getOp, 'POST': self.postOp, 'DELETE': self.deleteOp}, 'scope':'op'},
-			"/api/banana/op/attributes/<attribute>":{'handlers':{'GET':self.getOpAttribute, 'PUT':self.putOpAttribute}, 'scope':'op.attribute'},
-			"/api/banana/op/opIdMap": {'handlers':{'GET': self.getOpIdMap}, 'scope':'op.opIdMap'},
-			"/api/banana/op/id": {'handlers':{'GET': self.getOpID}, 'scope':'op.id'},
-			"/api/banana/op/cookMetrics":{'handlers':{},'scope':'op.cook'},
-			"/api/banana/op/id/<op-id>/par/<par-name>": {'handlers':{'GET': self.getOpPar}, 'scope':'op.par'},
-			"/api/banana/op/id/<id>/par/<par>/val/<val>": {'handlers':{'PUT': self.putOpPar}, 'scope':'op.par.val'},
-			"/api/banana/op/name": {'handlers':{'GET': self.getOpName, 'PUT': self.putOpName}, 'scope':'op.name'},
-			"/api/banana/op/storage": {'handlers':{'GET': self.getOpStorage}, 'scope':'op.storage'},
-			"/api/banana/op/tags": {'handlers':{'GET': self.getOpTags, 'POST': self.postOpTags, 'DELETE': self.deleteOpTags}, 'scope':'op.tags'},
-			"/api/banana/op/par": {'handlers':{'GET': self.getOpPar, 'PUT': self.putOpPar}, 'scope':'op.par'},
+			"/api/banana/op": {'handlers':{'GET': self.getOp, 'POST': self.postOp, 'DELETE': self.deleteOp}, 'scope':'ops'},
+			"/api/banana/op/attributes/<attribute>":{'handlers':{'GET':self.getOpAttribute, 'PUT':self.putOpAttribute}, 'scope':'ops.attribute'},
+			"/api/banana/op/opIdMap": {'handlers':{'GET': self.getOpIdMap}, 'scope':'ops.opIdMap'},
+			"/api/banana/op/id": {'handlers':{'GET': self.getOpID}, 'scope':'ops.id'},
+			"/api/banana/op/cookMetrics":{'handlers':{},'scope':'ops.cook'},
+			"/api/banana/op/id/<op-id>/par/<par-name>": {'handlers':{'GET': self.getOpPar}, 'scope':'ops.par'},
+			"/api/banana/op/id/<id>/par/<par>/val/<val>": {'handlers':{'PUT': self.putOpPar}, 'scope':'ops.par.val'},
+			"/api/banana/op/name": {'handlers':{'GET': self.getOpName, 'PUT': self.putOpName}, 'scope':'ops.name'},
+			"/api/banana/op/storage": {'handlers':{'GET': self.getOpStorage}, 'scope':'ops.storage'},
+			"/api/banana/op/tags": {'handlers':{'GET': self.getOpTags, 'POST': self.postOpTags, 'DELETE': self.deleteOpTags}, 'scope':'ops.tags'},
+			"/api/banana/op/par": {'handlers':{'GET': self.getOpPar, 'PUT': self.putOpPar}, 'scope':'ops.par'},
 			"/api/banana/namedOps":{'handlers':{'GET':self.getNamedOps}, 'scope':'namedOps'},
 			"/api/banana/namedOps/op/<name>": {'handlers':{'GET': self.getNamedOp}, 'scope':'namedOps'},
 			"/api/banana/namedOps/op/<name>/attribute/<attribute>": {'handlers':{'GET': self.getNamedOpAttribute, 'PUT': self.putNamedOpAttribute}, 'scope':'namedOps.attribute'},
@@ -115,6 +115,9 @@ class ITRAP():
 		self.response = response
 		self.parameters = request['pars']
 		uri = request['uri']
+		if uri.endswith('/'):
+			uri = uri[:-1]
+		print(uri)
 		method = request['method']
 
 		self.response['content-type'] = 'application/json'
@@ -972,7 +975,7 @@ class ITRAP():
 				'index': m
 			}
 			monitorsData.append(thisMonitor)
-			link = self.rel_prefix + f'api/banana/monitors/{m}'
+			link = self.rel_prefix + f'api/banana/monitors/monitor/{m}'
 			monitorLinks.append({
 				'rel': 'monitors/monitor',
 				'href': link
@@ -1045,7 +1048,10 @@ class ITRAP():
 						'type':'str'
 					}
 				},
-				'links':[]
+				'links':[{
+					'rel':'self',
+					'href':self.rel_prefix + f'api/banana/monitors/monitor/{thisMonitor.index}'
+				}]
 			}
 			self.formatResponse(200, 'OK', data)
 
@@ -1075,8 +1081,20 @@ class ITRAP():
 
 	def postMonitorsRefresh(self):
 		monitors.refresh()
-		data = {}
-		self.formatResponse(204, 'No Content', {})
+		data = {
+			'name':'Refresh Monitors',
+			'scope':'monitors.refresh',
+			'description':'',
+			'built-in':True,
+			'data':{},
+			'links':[
+				{
+					'rel':'self',
+					'href':self.rel_prefix + 'api/banana/monitors/refresh'
+				}
+			]
+		}
+		self.formatResponse(200, 'OK', data)
 
 #-------------------------------------------------------#
 #---------------------- OPERATORS ----------------------#
@@ -1093,11 +1111,16 @@ class ITRAP():
 		_id = operator.id
 		data = {
 			'name':f'Operator {_id}',
-			'scope':'op',
+			'scope':'ops',
 			'description':'',
 			'built-in':True,
 			'data':butils.jsonifyOp(operator),
-			'links':[]
+			'links':[
+				{
+					'rel':'self',
+					'href':self.rel_prefix + f'api/banana/op?id={_id}'
+				}
+			]
 		}
 		self.formatResponse(200, 'OK', data)
 	@handler(schemas['post_op'])
@@ -1118,7 +1141,13 @@ class ITRAP():
 			'scope': 'op',
 			'description':'',
 			'built-in':True,
-			'data': butils.jsonifyOp(newOp)
+			'data': butils.jsonifyOp(newOp),
+			'links':[
+				{
+					'rel':'self',
+					'href':self.rel_prefix + f'api/banana/op?id={_id}'
+				}
+			]
 		}
 		self.formatResponse(201, 'Created', data)
 	@handler(schemas['delete_op'])
@@ -1148,9 +1177,15 @@ class ITRAP():
 			attributeVal = getattr(operator, attribute)
 			data = {
 				'name':f'Operator {_id} {attribute}',
-				'scope':'op.attribute',
+				'scope':'ops.attribute',
 				'data':{'value':attributeVal,
-					'type':str(type(attributeVal).__name__)}
+					'type':str(type(attributeVal).__name__)},
+				'links':[
+					{
+						'rel':'self',
+						'href':self.rel_prefix + f'api/banana/op/{attribute}?id={_id}'
+					}
+				]
 			}
 			self.formatResponse(200, 'OK', data)
 		else:
@@ -1174,8 +1209,8 @@ class ITRAP():
 				return
 
 			data = {
-				'name':'Operator Attribute',
-				'scope':'op.attribute',
+				'name':'opserator Attribute',
+				'scope':'ops.attribute',
 				'data':{
 					'value':value,
 					'type':str(type(value).__name__)
@@ -1218,7 +1253,17 @@ class ITRAP():
 				'data': {
 						'value': _id,
 						'type': 'int'
-				}
+				},
+				'links':[
+					{
+						'rel':'self',
+						'href':self.rel_prefix + f'api/banana/op/id?path={path}'
+					},
+					{
+						'rel':'op',
+						'href':self.rel_prefix + f'api/banana/op?id={_id}'
+					}
+				]
 			}
 			self.formatResponse(200, 'OK', data)
 		else:
@@ -1232,14 +1277,19 @@ class ITRAP():
 
 		if operator:
 			name = operator.name
+			_id = operator.id
 			data = {
-				'name': 'Operator Name',
+				'name': f'Operator {_id} name',
 				'scope': 'op.name',
 				'description': '',
 				'built-in': True,
 				'data': {
 						'value': name,
 						'type': 'str'
+				},
+				'links':{
+					'rel':'self',
+					'href':self.rel_prefix + f'api/banana/op/name?id={_id}'
 				}
 			}
 
@@ -1320,7 +1370,13 @@ class ITRAP():
 						'type': 'set',
 						'items': {'type': 'str'}},
 				'operator_name': operatorName,
-				'operator_id': operatorId
+				'operator_id': operatorId,
+				'links':[
+					{
+						'rel':'self',
+						'href':self.rel_prefix + f'api/banana/op/tags?id={operatorId}'
+					}
+				]
 			}
 			self.formatResponse(200, 'OK', data)
 		else:
@@ -1338,7 +1394,21 @@ class ITRAP():
 		if operator:
 			for tag in tags:
 				operator.tags.add(tag)
-			data = {'message': 'Format this!!'}
+			_id = operator.id
+			data = {
+				'success':{
+					'name':f'Operator {_id} tags',
+					'scope':'op.tags',
+					'description':'',
+					'data':{},
+					'links':[
+					{
+						'rel':'self',
+						'href':self.rel_prefix + f'api/banana/op/tags?id={_id}'
+					}
+				]
+				}
+			}
 			self.formatResponse(201, 'Created', data)
 		else:
 			data = {
@@ -1353,7 +1423,7 @@ class ITRAP():
 		for tag in tags:
 			try:
 				op(path).tags.remove(tag)
-				self.formatResponse(200, 'OK', {})
+				self.formatResponse(204, 'No Content', {})
 			except KeyError:
 				self.formatResponse(404, 'Resource Not Found', {})
 
@@ -1362,12 +1432,20 @@ class ITRAP():
 		params = self.parameters
 
 		path = params.get('path') or int(params.get('id'))
-		par = params['name']
+		par = params['par']
 		operator = op(path)
+		
 		if operator:
+			_id = operator.id
 			value = operator.par[par].val
 			data = {
-				'data': value
+				'name':f'Operator {_id} parameter {par}',
+				'scope':'ops.par',
+				'description':'',
+				'data': {
+					'value':value,
+					'type':type(value).__name__
+					}
 			}
 		self.formatResponse(200, 'OK', data)
 

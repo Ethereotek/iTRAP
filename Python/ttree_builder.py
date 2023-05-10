@@ -18,6 +18,9 @@ class Trie:
 	def insert(self, path: str, handlers: dict, scope: str) -> None:
 		node = self.root
 		path = path.strip('/')
+		# split_path = path.split('/')
+		# if not split_path[-1]:
+		# 	split_path = split_path[:-1]
 
 		for segment in path.split('/'):
 			# check if the segment is a parameter

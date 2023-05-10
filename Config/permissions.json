@@ -1,1 +1,27 @@
-{"admin": {"scopes": ["app.*", "project.*", "ops.*", "namedOps.*", "monitors.*", "project.*", "ui.*", "namedPars.*", "permissions"], "key": "ae93483c-ed24-11ed-800f-9cfce837ddb7"}, "user": {"scopes": ["app.*", "project.*"], "exclusions": ["app.*.put", "project.*.put"], "key": "682fef71-ed21-11ed-a502-9cfce837ddb7"}}
+{
+	"admin": {
+		"scopes": [
+			"app.*",
+			"project.*",
+			"ops.*",
+			"namedOps.*",
+			"monitors.*",
+			"project.*",
+			"ui.*",
+			"namedPars.*",
+			"permissions"
+		],
+		"key": "ae93483c-ed24-11ed-800f-9cfce837ddb7"
+	},
+	"user": {
+		"scopes": [
+			"app.*",
+			"project.*"
+		],
+		"exclusions": [
+			"app.*.put",
+			"project.*.put"
+		],
+		"key": "682fef71-ed21-11ed-a502-9cfce837ddb7"
+	}
+}

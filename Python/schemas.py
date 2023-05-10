@@ -232,13 +232,13 @@ schemas = {
             'id':{
                 'type':str
             },
-            'name':{
+            'par':{
                 'type':str
             }
         },
         'required':[
             ['path','id'],
-            'name'
+            'par'
         ]
     },
     'put_op_par':{

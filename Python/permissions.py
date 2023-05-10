@@ -7,9 +7,15 @@ class Permission:
 		self._key = None
 		self.config = config
 		self.user = user
-		self.scopes = self.ingestScopes(self.config[self.user].get('scopes'))
-		self.exclusions = self.ingestExclusions(self.config[self.user].get('exclusions'))
-		self.createKey()
+		self.userConfig = self.config.get(self.user)
+		if self.userConfig:
+			self.scopes = self.ingestScopes(self.config[self.user].get('scopes'))
+			self.exclusions = self.ingestExclusions(self.config[self.user].get('exclusions'))
+			self.createKey()
+		else:
+			del self
+			raise Exception(f'User does not exist in the configuration.')
+			
 
 	@property
 	def key(self):
