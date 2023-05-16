@@ -27,9 +27,19 @@ tags:
       url: https://docs.derivative.ca/Project_Class
   - name: sysinfo
     description: Current system and hardware information
+    externalDocs:
+      description: Derivative Documentation
+      url: https://docs.derivative.ca/SysInfo_Class
   - name: ui
+    description: The UI class describes access to the UI elements of the application
+    externalDocs:
+      description: Derivative Documentation
+      url: https://docs.derivative.ca/UI_Class
   - name: monitors
     description: Access to information about all connected display devices
+    externalDocs:
+      description: Derivative Documentation
+      url: https://docs.derivative.ca/Monitors_Class
   - name: operators
     description: Access and perform methods on all operators
   - name: named operators
@@ -612,9 +622,12 @@ paths:
           $ref: '#/components/responses/400'
   
   /project/name:
+
     get:
       tags:
         - project
+      summary: The filename under which the project is saved.
+      description: The filename under which the project is saved.
       responses:
         '200':
           description: 'OK'
@@ -697,6 +710,8 @@ paths:
     get:
       tags:
         - project
+      summary: The App build number when the project was last saved.
+      description: The App build number when the project was last saved.
       responses:
         '200':
           description: 'OK'
@@ -731,6 +746,8 @@ paths:
     get:
       tags:
         - project
+      summary: The time and date the project was last saved.
+      description: The time and date the project was last saved.
       responses:
         '200':
           description: 'OK'
@@ -765,6 +782,8 @@ paths:
     get:
       tags:
         - project
+      summary: The App operating system name when the project was last saved.
+      description: The App operating system name when the project was last saved.
       responses:
         '200':
           description: 'OK'
@@ -798,6 +817,8 @@ paths:
     get:
       tags:
         - project
+      summary: The App operating system version when the project was last saved.
+      description: The App operating system version when the project was last saved.
       responses:
         '200':
           description: 'OK'
@@ -843,30 +864,53 @@ paths:
     get:
       tags:
         - project
+      summary: Returns the user-defined `paths` dictionary
+      description: A dictionary which can be used to define URL-syntax path prefixes, enabling you to move your media to different locations easily.
+      externalDocs:
+        description: Derivative Documentation 
+        url: https://docs.derivative.ca/Project_Class#paths
       responses:
         '200':
           description: 'OK'
-    put:
-      tags:
-        - project
-      responses:
-        '200':
-          description: 'OK'
+    # put:
+    #   tags:
+    #     - project
+    #   responses:
+    #     '200':
+    #       description: 'OK'
   /project/paths/new:
     post:
       tags:
         - project
+      summary: Creates a new path in the project paths dictionary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: 
+                  type: string
+                path:
+                  type: string
+                  description: Absolute path to directory on host machine
       responses:
         '200':
           description: 'OK'
-  /project/paths/{path}:
+  /project/paths/{name}:
       put:
         tags:
           - project
+        summary: Update an existing project path
         parameters:
-          - name: path
+          - name: name
             in: path
             required: true
+            schema:
+              type: string
+          - name: path
+            required: true
+            in: query
             schema:
               type: string
         responses:
@@ -876,6 +920,7 @@ paths:
     get:
       tags:
         - project
+      summary: Return the maximum number of frames processed each second.
       responses:
         '200':
           description: 'OK'
@@ -909,6 +954,7 @@ paths:
     put:
       tags:
         - project
+      summary: Set the maximum number of frames processed each second.
       requestBody:
         content:
           application/json:
@@ -1026,6 +1072,7 @@ paths:
     get:
       tags:
         - project
+      summary: Get the perform on start state.
       responses:
         '200':
           description: 'OK'
@@ -1033,7 +1080,7 @@ paths:
     put:
       tags:
         - project
-      summary: Set the performOnStart variable
+      summary: Set the perform on start state.
       description: ''
       requestBody:
         content:
@@ -1046,11 +1093,11 @@ paths:
       responses:
         '200':
           description: 'OK'
-          
   /project/load:
     post:
       tags:
         - project
+      summary: Load a specific .toe file from disk.
       requestBody:
         content:
           application/json:
@@ -1073,7 +1120,7 @@ paths:
     post:
       tags:
         - project
-      summary: Save the currently running project
+      summary: Save the currently running project to disk.
       description: Save the current session to disk. If `path` is not provided the default/current filename is used. 
       parameters:
         - name: path
@@ -1094,6 +1141,7 @@ paths:
     post:
       tags:
         - project
+      summary: Quit the project.
       responses:
         '200':
           description: 'OK'
@@ -1101,7 +1149,7 @@ paths:
     get:
       tags:
         - sysinfo
-      summary: ''
+      summary: The number of CPUs/cores on the system.
       description: The number of CPUs/cores on the system.
       responses:
         '200':
@@ -1138,6 +1186,7 @@ paths:
     get:
       tags:
         - sysinfo
+      summary: Amount of available RAM memory.
       responses:
         '200':
           description: 'OK'
@@ -1174,12 +1223,16 @@ paths:
     get:
       tags:
         - ui
+      summary: Get the master audio output volume.
+      description: A value of 0 is no output, while a value of 1 is full output.
       responses:
         '200':
           description: 'OK'
     put:
       tags:
         - ui
+      summary: Set the master audio output volume.
+      description: A value of 0 is no output, while a value of 1 is full output.
       requestBody:
         required: true
         content:
@@ -1198,6 +1251,7 @@ paths:
     get:
       tags:
         - monitors
+      summary: Get a description of all connected monitors
       responses:
         '200':
           description: 'OK'
@@ -1240,11 +1294,11 @@ paths:
                             name: "\\\\.\\Display1"
                             description: Asus VP247
                             index: 0
-
   /monitors/monitor/{monitor}:
     get:
       tags:
         - monitors
+      summary: Get a description of all a specific monitor.
       parameters:
         - name: monitor
           in: path
@@ -1372,12 +1426,11 @@ paths:
                                 type: string
                                 enum:
                                   - float
-
-                              
   /monitors/monitor/{monitor}/{attribute}:
     get:
       tags:
         - monitors
+      summary: Get a specific attribute a connected monitor.
       parameters:
         - name: monitor
           in: path
@@ -1821,25 +1874,26 @@ paths:
         '200':
           description: 'OK'
   
-  /namedOps:
-    get:
-      tags:
-        - named operators
-      responses:
-        '200':
-          description: 'OK'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  operator_name:
-                    type: string
-                    default: path/to/operator
+  # /namedOps:
+  #   get:
+  #     tags:
+  #       - named operators
+  #     responses:
+  #       '200':
+  #         description: 'OK'
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 operator_name:
+  #                   type: string
+  #                   default: path/to/operator
   /namedOps/op/{name}:
     get:
       tags:
         - named operators
+      summary: Get a description of a Named Operator.
       parameters:
         - name: name
           in: path
@@ -1857,6 +1911,7 @@ paths:
     get:
       tags:
         - named operators
+      summary: Get the attribute value of a Named Operator.
       parameters:
         - name: name
           in: path
@@ -1875,6 +1930,7 @@ paths:
     put:
       tags:
         - named operators
+      summary: Update the value of an attribute of a Named Operator
       parameters:
         - name: name
           in: path
@@ -1894,10 +1950,12 @@ paths:
       responses:
         '200':
           description: 'OK'
+          
   /namedOps/op/{name}/par/{par}:
     get:
       tags:
         - named operators
+      summary: Get the value of a parameter of a Named Operator.
       parameters:
         - name: name
           in: path
@@ -1915,36 +1973,37 @@ paths:
         '404':
           'description': 'Resource Not Found'
         
-  /namedPars:
-    get:
-      tags:
-        - named parameters
-      responses:
-        '200':
-          description: 'OK'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    par_name:
-                      type: string
-                      default: some_par
-                    owner:
-                      type: object
-                      properties:
-                        path:
-                          type: string
-                          default: path/to/owner
-                        id:
-                          type: number
-                          default: 1234
+  # /namedPars:
+  #   get:
+  #     tags:
+  #       - named parameters
+  #     responses:
+  #       '200':
+  #         description: 'OK'
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 type: object
+  #                 properties:
+  #                   par_name:
+  #                     type: string
+  #                     default: some_par
+  #                   owner:
+  #                     type: object
+  #                     properties:
+  #                       path:
+  #                         type: string
+  #                         default: path/to/owner
+  #                       id:
+  #                         type: number
+  #                         default: 1234
   /namedPars/par/{name}:
     get:
       tags:
         - named parameters
+      summary: Get the value of a Named Parameter
       parameters:
         - name: name
           in: path
@@ -1957,17 +2016,42 @@ paths:
     put:
       tags:
         - named parameters
+      summary: Update the value of a Named Parameter
+      description: There are two types of Named Parameters in this context, scalar and vector. Scalars are those with a single value, vectors are those such as radius or transform, that have multiple components. They are updated through the same call, but have different request body schemas. Refer to the Postman spec for more detailed examples.
       parameters:
         - name: name
           in: path
           required: true
           schema:
             type: string
-        - name: val
-          in: query
-          required: true
-          schema:
-            type: string
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameter:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - scalar
+                        - vector
+                    value:
+                      oneOf:
+                        - type: string
+                        - type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              value:
+                                type: string
       responses:
         '200':
           description: 'OK'

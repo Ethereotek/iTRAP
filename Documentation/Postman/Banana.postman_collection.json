@@ -371,7 +371,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/test_sphere",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOps/op/test_sphere",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -380,7 +380,8 @@
 							"path": [
 								"api",
 								"banana",
-								"namedOp",
+								"namedOps",
+								"op",
 								"test_sphere"
 							]
 						}
@@ -393,7 +394,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/test_sphere/attribute/bypass",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOps/op/test_sphere/attribute/bypass",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -402,7 +403,8 @@
 							"path": [
 								"api",
 								"banana",
-								"namedOp",
+								"namedOps",
+								"op",
 								"test_sphere",
 								"attribute",
 								"bypass"
@@ -417,7 +419,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/test_sphere/par/radx",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOps/op/test_sphere/par/radx",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -426,7 +428,8 @@
 							"path": [
 								"api",
 								"banana",
-								"namedOp",
+								"namedOps",
+								"op",
 								"test_sphere",
 								"par",
 								"radx"
@@ -441,7 +444,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOp/const/attribute/bypass?value=True",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedOps/op/test_sphere/attribute/bypass?value=False",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -450,15 +453,16 @@
 							"path": [
 								"api",
 								"banana",
-								"namedOp",
-								"const",
+								"namedOps",
+								"op",
+								"test_sphere",
 								"attribute",
 								"bypass"
 							],
 							"query": [
 								{
 									"key": "value",
-									"value": "True"
+									"value": "False"
 								}
 							]
 						}
@@ -492,7 +496,7 @@
 							"variable": [
 								{
 									"key": "name",
-									"value": "radx"
+									"value": "sph_radius"
 								}
 							]
 						}
@@ -500,12 +504,21 @@
 					"response": []
 				},
 				{
-					"name": "Get Named Parameter Copy",
+					"name": "Put Named Scalar Parameter",
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"parameter\":{\r\n        \"type\":\"scalar\",\r\n        \"name\":\"radx\",\r\n        \"value\":0.75\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedPars/par/:name?val=2",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedPars/par/:name",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -518,16 +531,48 @@
 								"par",
 								":name"
 							],
-							"query": [
-								{
-									"key": "val",
-									"value": "2"
-								}
-							],
 							"variable": [
 								{
 									"key": "name",
 									"value": "radx"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Named Vector Parameter",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"parameter\": {\r\n        \"name\": \"sph_radius\",\r\n        \"type\": \"vector\",\r\n        \"value\": [\r\n            {\r\n                \"name\": \"radx\",\r\n                \"value\": 1\r\n            },\r\n            {\r\n                \"name\":\"rady\",\r\n                \"value\":0.5\r\n            }\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/namedPars/par/:name",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"namedPars",
+								"par",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "sph_radius"
 								}
 							]
 						}
@@ -994,7 +1039,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"path\":\"/project1/base2\",\r\n    \"tags\":[\"base\"]\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1002,7 +1047,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/par?op-id=5999&par-name=file",
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/op/par?path=/project1&par=w",
 							"protocol": "http",
 							"host": [
 								"{{ip_address}}"
@@ -1016,12 +1061,12 @@
 							],
 							"query": [
 								{
-									"key": "op-id",
-									"value": "5999"
+									"key": "path",
+									"value": "/project1"
 								},
 								{
-									"key": "par-name",
-									"value": "file"
+									"key": "par",
+									"value": "w"
 								}
 							]
 						}
@@ -1287,6 +1332,29 @@
 									"key": "name",
 									"value": "content"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project Path Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/project/paths/new",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"project",
+								"paths",
+								"new"
 							]
 						}
 					},
@@ -1963,6 +2031,32 @@
 								"banana",
 								"sysinfo",
 								"ram"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "New Folder",
+			"item": [
+				{
+					"name": "Get Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip_address}}:{{port}}/api/banana/permissions",
+							"protocol": "http",
+							"host": [
+								"{{ip_address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"banana",
+								"permissions"
 							]
 						}
 					},

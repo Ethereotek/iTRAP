@@ -329,13 +329,10 @@ schemas = {
     },
     'put_named_par':{
         'parameters':{
-            'name':{
-                'type':str
-            },
-            'val':{
+            'parameter':{
                 'type':'any'
             }
         },
-        'required':['name', 'val']
+        'required':['parameter']
     }
 }
