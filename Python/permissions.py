@@ -31,7 +31,8 @@ class Permission:
 		pass
 
 	def ingestScopes(self, _scopes):
-		_scopes.append('permissions')
+		if 'permissions' not in _scopes:
+			_scopes.append('permissions')
 		return [re.compile(scope) for scope in _scopes]
 	
 	def ingestExclusions(self, _exclusions):

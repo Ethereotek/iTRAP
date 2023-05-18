@@ -22,8 +22,12 @@ class ITRAP():
 
 		if not self.thisComp.storage.get('Permissions'):
 			self.thisComp.store('Permissions', {'keys': {}, 'users': {}})
-		print(thisComp)
-
+		'''
+			# Monkey Business
+		if not self.thisComp.storage.get('MonkeyTree'):
+			self.thisComp.store('MonkeyTree', {})
+		self.monkey_tree = self.thisComp.storage['MonkeyTree']
+		'''
 		self.routing_table = {
 			"/api/banana/permissions": {'handlers': {'GET': self.getPermissions}, 'scope': 'permissions'},
 			"/api/banana/app/architecture": {'handlers': {'GET': self.getAppArchitecture}, 'scope': 'app.architecture'},
@@ -81,7 +85,13 @@ class ITRAP():
 			handlers = val.get('handlers')
 			scope = val.get('scope')
 			self.routing_tree.insert(key, handlers, scope)
-
+		'''
+			# Monkey Business
+		for key, val in self.monkey_tree.items():
+			handlers = val.get('handlers')
+			scope = val.get('scope')
+			self.routing_tree.insert(key, handlers, scope)		
+		'''
 # --------------------------------------------------------------#
 # --------------------------------------------------------------#
 # --------------------------------------------------------------#
@@ -119,27 +129,38 @@ class ITRAP():
 		self.parameters = request['pars']
 		uri = request['uri']
 		if uri.endswith('/'):
-			uri = uri[:-1]
+			uri = uri[:-1]			
 		print(uri)
 		method = request['method']
 
 		self.response['content-type'] = 'application/json'
 		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
 
-		self.permission = self.getPermission()
-		if not self.permission:
-			self.formatResponse(401, 'Not Authorized', {
-								'error': 'no permissions found'})
-			return self.response
-
-		# handler, params, scope = self.routing_tree.find(uri, method)
 		node, params = self.routing_tree.find(uri)
+		if not node:
+			self.formatResponse(404, 'Resource Not Found', {})
+			return self.response
+		
 		handler = node.handlers.get(method)
 		scope = node.scope
+		
+		'''	
+			# Monkey Business	
+		if uri.split('/')[2] == 'monkey':
+			handler(self)
+			return self.response
+		'''
+
 		if not handler:
 			allow = ','.join(node.handlers.keys())
 			response['Allow'] = allow
 			self.formatResponse(405, 'Method Not Allowed', {})
+			return self.response
+		
+		self.permission = self.getPermission()
+		if not self.permission:
+			self.formatResponse(401, 'Not Authorized', {
+								'error': 'no permissions found'})
 			return self.response
 
 		# check that scope is allowed in apiKey's permission
@@ -155,10 +176,8 @@ class ITRAP():
 		if params:
 			self.parameters.update(params)
 
-		if uri.split('/')[2] == 'monkey':
-			handler(self)
-		else:
-			handler()
+		handler()
+
 		return self.response
 
 	def format500(self, data=None, error='unknown'):
@@ -184,6 +203,9 @@ class ITRAP():
 	def InsertRoute(self, url: str, handlers: dict, scope: str):
 		self.url = url
 		url = '/api/monkey' + url
+		route_dict = {url:{'handlers':handlers, 'scope':scope}}
+		self.monkey_tree.update(route_dict)
+		# self.monkey.insert(url, handlers, scope)
 		self.routing_tree.insert(url, handlers, scope)
 
 	def CreateKey(self, user):
@@ -1076,7 +1098,9 @@ class ITRAP():
 			self.formatResponse(404, 'Resource Not Found', {})
 
 	def getMonitorAttribute(self):
-		thisMonitor = self.get_monitor()
+		index = int(self.parameters.get('mon'))
+		print(index)
+		thisMonitor = self.get_monitor(index)
 		attribute = self.parameters.get('attribute')
 		attribute_name = copy.copy(attribute)
 
@@ -1119,9 +1143,9 @@ class ITRAP():
 
 	@handleGet(schemas['get_op'])
 	def getOp(self):
-
-		path = self.parameters.get('path') or self.parameters.get('id')
+		path = self.parameters.get('path') or int(self.parameters.get('id'))
 		operator = op(path)
+		print(operator)
 		if not operator:
 			self.formatResponse(404, 'Resource Not Found', {})
 			return
@@ -1172,7 +1196,7 @@ class ITRAP():
 
 	@handler(schemas['delete_op'])
 	def deleteOp(self, data):
-		path = data.get('path') or data.get('id')
+		path = data.get('path') or int(data.get('id'))
 		operator = op(path)
 		if not operator:
 			data = {
@@ -1187,7 +1211,7 @@ class ITRAP():
 
 	@handleGet(schemas['get_op_attribute'])
 	def getOpAttribute(self):
-		path = self.parameters.get('path') or self.parameters.get('id')
+		path = self.parameters.get('path') or int(self.parameters.get('id'))
 		attribute = self.parameters.get('attribute')
 		operator = op(path)
 		hasAttribute = hasattr(operator, attribute)
@@ -1214,7 +1238,7 @@ class ITRAP():
 
 	@handleGet(schemas['put_op_attribute'])
 	def putOpAttribute(self):
-		path = self.parameters.get('path') or self.parameters.get('id')
+		path = self.parameters.get('path') or int(self.parameters.get('id'))
 		attribute = self.parameters.get('attribute')
 		value = self.parameters.get('val')
 
@@ -1363,11 +1387,11 @@ class ITRAP():
 		try:
 			code = 200
 			message = 'OK'
-			data = json.dumps(data)
+			jsonable = json.dumps(data)
 		except Exception as e:
 			code = 500
 			message = 'Internal Server Error'
-			data = {'error': str(e)}
+			data = {'error': 'Operator\'s storage likely contains an object and cannot be serialized.'}
 		finally:
 			self.formatResponse(code, message, data)
 
