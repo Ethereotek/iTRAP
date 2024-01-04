@@ -2,7 +2,7 @@
  Interface for Touch Remote Application Programming
 
 ## Introduction
-Banana is a RESTful API intended to provide a standardized remote access protocol to Derivative's TouchDesigner. While the Python API provides users extensive capabilities from within TouchDesigner, and there native operators almost any major communication protocol you can think of, there is no defacto way to remote into a TouchDesigner instance. Banana is an attempt to remedy this. Much of the Python API is now accessible through RESTful HTTP calls, and there is a large interface for interacting with operators and parameters in a way that makes it easy when outside of the TouchDesigner environment, such as ID maps, NAPs, and more. Additionally, the iTRAP interface can be extended through the Monkey API, which allows users to leverage the tools already in place for routing API calls, extracting parameters, and validating data.
+Banana is a RESTful API intended to provide a standardized remote access protocol to Derivative's TouchDesigner. While the Python API provides users extensive capabilities from within TouchDesigner, and the native operators support almost any major communication protocol you can think of, there is no defacto way to remote into a TouchDesigner instance. Banana is an attempt to remedy this. Much of the Python API is now accessible through RESTful HTTP calls, and there is a large interface for interacting with operators and parameters in a way that makes it easy when outside of the TouchDesigner environment, such as ID maps, NAPs, and more.
 
 ## Getting Started 
 The Banana API is served through iTRAP - Interface for Touch Remote Access Protocol - a dependency-free component that you can simply drag and drop from the `/Build` directory into your project.
