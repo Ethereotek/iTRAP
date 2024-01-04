@@ -1,0 +1,14 @@
+params:
+  path:
+    type: str
+  id:
+    type: int
+  name:
+    type: str
+  required:
+    - oneOf:
+      - path
+      - id
+    - name
+
+  

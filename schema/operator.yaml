@@ -1,0 +1,76 @@
+operator:
+	type: object
+	properties:
+		type:
+			type: object
+			properties:
+				label:
+					type: string
+				family:
+					type: string
+				type: 
+					type: string
+					enum:
+						- oscin
+						- text
+						- etc.
+				subType:
+					type: string
+					enum:
+						- panel
+						- object
+						- etc.
+				OPType:
+					type: string
+					enum:
+						- oscinCHOP
+						- textDAT
+						- sphereSOP
+						- etc.
+		id:
+			type: integer
+			minimum: 0
+		name:
+			type: string
+		path:
+			type: string
+		time:
+			type: string
+		builtinPars:
+			type: array
+			items:
+				type: tuple
+		tags:
+			type: set
+			items:
+				type: string
+		parent:
+			type: string
+		flags:
+			type: object
+			properties:
+				activeViewer:
+					type: bool
+				allowCooking:
+					type: bool
+				bypass:
+					type: bool
+				cloneImmune:
+					type: bool
+				current:
+					type: bool
+				display:
+					type: bool
+				expose:
+					type: bool
+				lock:
+					type: bool
+				selected:
+					type: bool
+				render:
+					type: bool
+
+			comment:
+				type: string
+		
+		

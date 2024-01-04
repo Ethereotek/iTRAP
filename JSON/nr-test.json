@@ -1,0 +1,1507 @@
+[
+    {
+        "id": "4d20075d94322014",
+        "type": "tab",
+        "label": "iTRAP test",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ff8cdb9b58a66edc",
+        "type": "group",
+        "z": "4d20075d94322014",
+        "name": "request",
+        "style": {
+            "fill": "#bfdbef",
+            "label": true
+        },
+        "nodes": [
+            "28d63e273d31fdd8",
+            "806ab6b720cccae2",
+            "5d98e62dc7e50454",
+            "7d30cb2ad6f6c7ed"
+        ],
+        "x": 674,
+        "y": 759,
+        "w": 712,
+        "h": 82
+    },
+    {
+        "id": "bb63e9cfaaeca397",
+        "type": "group",
+        "z": "4d20075d94322014",
+        "name": "APP",
+        "style": {
+            "fill": "#ffefbf",
+            "label": true
+        },
+        "nodes": [
+            "1b1666e54d6d0b9a",
+            "1b6f35945ea77cc5",
+            "9d98b63bbbc6cdd1",
+            "15a85814a7598d1b",
+            "e55641d96b521f20",
+            "8b9067cd664eacab",
+            "7817ea5a04935a7e",
+            "c1348ef63dc554c3",
+            "b3ad5c313a9fd3c7"
+        ],
+        "x": 34,
+        "y": 79,
+        "w": 312,
+        "h": 382
+    },
+    {
+        "id": "bed4348d2c1ba116",
+        "type": "group",
+        "z": "4d20075d94322014",
+        "name": "PROJECT",
+        "style": {
+            "fill": "#ffffbf",
+            "label": true
+        },
+        "nodes": [
+            "5598807c58e6eb3d",
+            "6912f81b5df84c5d",
+            "2a61831a1f36ac0c",
+            "71ceea269e49b738",
+            "1f45323439de2990",
+            "840518679babb60d",
+            "32823028c170212c",
+            "2f9c1ca9164a4acc",
+            "8029aec8dc165b7f",
+            "859e387620aefe2b"
+        ],
+        "x": 34,
+        "y": 499,
+        "w": 352,
+        "h": 402
+    },
+    {
+        "id": "2943697fe299a964",
+        "type": "group",
+        "z": "4d20075d94322014",
+        "name": "SYSINFO",
+        "style": {
+            "fill": "#e3f3d3",
+            "label": true
+        },
+        "nodes": [
+            "5f49a5281db2332f",
+            "023cdc06c4a45665",
+            "07cb8d7a680ec8c7",
+            "8bcb5152f4163029",
+            "7a9648298ded5237",
+            "d5fc66d617022a6e"
+        ],
+        "x": 54,
+        "y": 959,
+        "w": 332,
+        "h": 242
+    },
+    {
+        "id": "c1348ef63dc554c3",
+        "type": "junction",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "x": 320,
+        "y": 200,
+        "wires": [
+            [
+                "7d30cb2ad6f6c7ed"
+            ]
+        ]
+    },
+    {
+        "id": "859e387620aefe2b",
+        "type": "junction",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "x": 360,
+        "y": 680,
+        "wires": [
+            [
+                "7d30cb2ad6f6c7ed"
+            ]
+        ]
+    },
+    {
+        "id": "d5fc66d617022a6e",
+        "type": "junction",
+        "z": "4d20075d94322014",
+        "g": "2943697fe299a964",
+        "x": 360,
+        "y": 1080,
+        "wires": [
+            [
+                "7d30cb2ad6f6c7ed"
+            ]
+        ]
+    },
+    {
+        "id": "318d1b59e42cd971",
+        "type": "junction",
+        "z": "4d20075d94322014",
+        "x": 420,
+        "y": 1580,
+        "wires": [
+            [
+                "7d30cb2ad6f6c7ed"
+            ]
+        ]
+    },
+    {
+        "id": "b4c75c91574d7925",
+        "type": "junction",
+        "z": "4d20075d94322014",
+        "x": 500,
+        "y": 1780,
+        "wires": [
+            [
+                "7d30cb2ad6f6c7ed"
+            ]
+        ]
+    },
+    {
+        "id": "1cd0debf53905c80",
+        "type": "junction",
+        "z": "4d20075d94322014",
+        "x": 400,
+        "y": 1320,
+        "wires": [
+            [
+                "7d30cb2ad6f6c7ed"
+            ]
+        ]
+    },
+    {
+        "id": "1b1666e54d6d0b9a",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/architecture",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/architecture",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "28d63e273d31fdd8",
+        "type": "http request",
+        "z": "4d20075d94322014",
+        "g": "ff8cdb9b58a66edc",
+        "name": "[GET] TouchDesigner",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 940,
+        "y": 800,
+        "wires": [
+            [
+                "5d98e62dc7e50454"
+            ]
+        ]
+    },
+    {
+        "id": "bbbaa56eed827b52",
+        "type": "http request",
+        "z": "4d20075d94322014",
+        "name": "[POST] TouchDesigner",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1390,
+        "y": 1480,
+        "wires": [
+            [
+                "5d98e62dc7e50454"
+            ]
+        ]
+    },
+    {
+        "id": "79d66aee3959b9d7",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 980,
+        "y": 1420,
+        "wires": [
+            [
+                "e94dfc515372de5a"
+            ]
+        ]
+    },
+    {
+        "id": "806ab6b720cccae2",
+        "type": "debug",
+        "z": "4d20075d94322014",
+        "g": "ff8cdb9b58a66edc",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "5d98e62dc7e50454",
+        "type": "json",
+        "z": "4d20075d94322014",
+        "g": "ff8cdb9b58a66edc",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1130,
+        "y": 800,
+        "wires": [
+            [
+                "806ab6b720cccae2"
+            ]
+        ]
+    },
+    {
+        "id": "1b6f35945ea77cc5",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/build",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/build",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "9d98b63bbbc6cdd1",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/launchTime",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/launchTime",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "7d30cb2ad6f6c7ed",
+        "type": "function",
+        "z": "4d20075d94322014",
+        "g": "ff8cdb9b58a66edc",
+        "name": "format",
+        "func": "msg.url = `http://localhost:29980/api/${msg.endpoint}`\ndelete msg.endpoint\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 800,
+        "wires": [
+            [
+                "28d63e273d31fdd8"
+            ]
+        ]
+    },
+    {
+        "id": "15a85814a7598d1b",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/osName",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/osName",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 240,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "e55641d96b521f20",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/power",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/power",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "8b9067cd664eacab",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/product",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/product",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 320,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "7817ea5a04935a7e",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/version",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/version",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 360,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "5598807c58e6eb3d",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/name",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/name",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 210,
+        "y": 540,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "6912f81b5df84c5d",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/saveVersion",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/saveVersion",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 190,
+        "y": 580,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "2a61831a1f36ac0c",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/saveBuild",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/saveBuild",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 200,
+        "y": 620,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "71ceea269e49b738",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/saveTime",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/saveTime",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 200,
+        "y": 660,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "1f45323439de2990",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/saveOSName",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/saveOSName",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 180,
+        "y": 700,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "840518679babb60d",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/paths",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/paths",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 210,
+        "y": 740,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "32823028c170212c",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/cookRate",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/cookRate",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 200,
+        "y": 780,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "2f9c1ca9164a4acc",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/realTime",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/realTime",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 200,
+        "y": 820,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "8029aec8dc165b7f",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bed4348d2c1ba116",
+        "name": "project/performOnStart",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/performOnStart",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 180,
+        "y": 860,
+        "wires": [
+            [
+                "859e387620aefe2b"
+            ]
+        ]
+    },
+    {
+        "id": "5f49a5281db2332f",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "2943697fe299a964",
+        "name": "sys_info/numCPUs",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "sys_info/numCPUs",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 210,
+        "y": 1000,
+        "wires": [
+            [
+                "d5fc66d617022a6e"
+            ]
+        ]
+    },
+    {
+        "id": "023cdc06c4a45665",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "2943697fe299a964",
+        "name": "sys_info/ram",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "sys_info/ram",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 230,
+        "y": 1040,
+        "wires": [
+            [
+                "d5fc66d617022a6e"
+            ]
+        ]
+    },
+    {
+        "id": "07cb8d7a680ec8c7",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "2943697fe299a964",
+        "name": "sys_info/numMonitors",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "sys_info/numMonitors",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 200,
+        "y": 1080,
+        "wires": [
+            [
+                "d5fc66d617022a6e"
+            ]
+        ]
+    },
+    {
+        "id": "8bcb5152f4163029",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "2943697fe299a964",
+        "name": "sys_info/MIDIInputs",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "sys_info/MIDIInputs",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 210,
+        "y": 1120,
+        "wires": [
+            [
+                "d5fc66d617022a6e"
+            ]
+        ]
+    },
+    {
+        "id": "7a9648298ded5237",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "2943697fe299a964",
+        "name": "sys_info/MIDIOutputs",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "sys_info/MIDIOutputs",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 200,
+        "y": 1160,
+        "wires": [
+            [
+                "d5fc66d617022a6e"
+            ]
+        ]
+    },
+    {
+        "id": "3f2495c737db7a2e",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "op/kinematics/par/value0",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "op/kinematics/par/value0",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 230,
+        "y": 1540,
+        "wires": [
+            [
+                "318d1b59e42cd971"
+            ]
+        ]
+    },
+    {
+        "id": "4c32d1e217725792",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "named_operators",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "named_operators",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 250,
+        "y": 1760,
+        "wires": [
+            [
+                "b4c75c91574d7925"
+            ]
+        ]
+    },
+    {
+        "id": "c299c91cbc2a2fed",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "named_parameters",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "named_parameters",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 250,
+        "y": 1820,
+        "wires": [
+            [
+                "b4c75c91574d7925"
+            ]
+        ]
+    },
+    {
+        "id": "b3ad5c313a9fd3c7",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "g": "bb63e9cfaaeca397",
+        "name": "app/not_real",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "app/control",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 420,
+        "wires": [
+            [
+                "c1348ef63dc554c3"
+            ]
+        ]
+    },
+    {
+        "id": "3f45097d48fa32f9",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "op/kinematics/par/isCHOP",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "op/kinematics/isCHOP",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 230,
+        "y": 1600,
+        "wires": [
+            [
+                "318d1b59e42cd971"
+            ]
+        ]
+    },
+    {
+        "id": "e3f92a7d521f4293",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "op/kinematics/par/value0",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "op/kinematics/par/value",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"value\":-1}",
+        "payloadType": "json",
+        "x": 930,
+        "y": 1480,
+        "wires": [
+            [
+                "e94dfc515372de5a"
+            ]
+        ]
+    },
+    {
+        "id": "e94dfc515372de5a",
+        "type": "function",
+        "z": "4d20075d94322014",
+        "name": "format",
+        "func": "msg.url = `http://localhost:29980/api/${msg.endpoint}`\ndelete msg.endpoint\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1210,
+        "y": 1480,
+        "wires": [
+            [
+                "bbbaa56eed827b52"
+            ]
+        ]
+    },
+    {
+        "id": "d460b4a597d3af49",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "op/not_an_operator/par/isCHOP",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "op/not_an_operator/par/isCHOP",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 250,
+        "y": 1660,
+        "wires": [
+            [
+                "318d1b59e42cd971"
+            ]
+        ]
+    },
+    {
+        "id": "dd077d05f08091cd",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "project/load",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/load",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"path\":\"dev_testLoad\"}",
+        "payloadType": "json",
+        "x": 930,
+        "y": 1580,
+        "wires": [
+            [
+                "e94dfc515372de5a"
+            ]
+        ]
+    },
+    {
+        "id": "e8aae6411bb80108",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "project/save",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "project/save",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 930,
+        "y": 1620,
+        "wires": [
+            [
+                "e94dfc515372de5a"
+            ]
+        ]
+    },
+    {
+        "id": "594e558a5d4c54f4",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "monitors/height",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "monitors/height",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 260,
+        "y": 1280,
+        "wires": [
+            [
+                "1cd0debf53905c80"
+            ]
+        ]
+    },
+    {
+        "id": "5a179a991a3cbc37",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "monitors/width",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "monitors/width",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 270,
+        "y": 1320,
+        "wires": [
+            [
+                "1cd0debf53905c80"
+            ]
+        ]
+    },
+    {
+        "id": "d26cfcde967d20e2",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "monitors/refresh",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "monitors/refresh",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 920,
+        "y": 1760,
+        "wires": [
+            [
+                "e94dfc515372de5a"
+            ]
+        ]
+    },
+    {
+        "id": "3b62f33cd74e7d5e",
+        "type": "inject",
+        "z": "4d20075d94322014",
+        "name": "monitors/numMonitors",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "endpoint",
+                "v": "monitors/numMonitors",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 240,
+        "y": 1380,
+        "wires": [
+            [
+                "1cd0debf53905c80"
+            ]
+        ]
+    }
+]

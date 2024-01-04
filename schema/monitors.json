@@ -1,0 +1,22 @@
+{
+	"bottom": 0,
+	"description": "ASUS VP247",
+	"displayName": "\\\\.\\DISPLAY1",
+	"dpiScale": 1.0,
+	"height": 1080,
+	"index": 0,
+	"isAffinity": true,
+	"isPrimary": true,
+	"left": 0,
+	"refreshRate": 59.940059661865234,
+	"right": 1919,
+	"scaledBottom": 0,
+	"scaledHeight": 1080,
+	"scaledLeft": 0,
+	"scaledRight": 1919,
+	"scaledTop": 1079,
+	"scaledWidth": 1920,
+	"serialNumber": "L6LMTF097766",
+	"top": 1079,
+	"width": 1920
+}

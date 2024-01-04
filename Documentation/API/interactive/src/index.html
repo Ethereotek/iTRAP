@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<script src="scripts.js"></script>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<title>TRACi API</title>
+</head>
+<style>
+	div.endpoint-card {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.endpoint-constructor p,
+	input,
+	select {
+		margin-left: 8px;
+		margin-right: 8px;
+		height: 24px;
+	}
+
+	div.endpoint-constructor {
+		display: flex;
+		flex-direction: row;
+		height: 24px;
+		border: 2px solid black;
+		align-items: center;
+		height: 32px;
+	}
+</style>
+
+<body>
+
+	<div id="app">
+		<div class="endpoint-card">
+			<div>
+				<p>OP</p>
+			</div>
+			<div style="display:flex;flex-direction: row;">
+				<div style="display:flex;flex-direction: column;">
+					<button onclick="send_TRACi_Request(app.op.endpoint, 'get')">GET</button>
+					<button onclick="send_TRACi_Request(app.op.endpoint, 'post')">POST</button>
+				</div>
+				<div class="endpoint-constructor">
+
+					<p>/api/op/</p>
+					<input type="text">
+					<p>/</p>
+					<select v-model="op.selectedOption">
+						<option v-for="option in op.options" :value="option" v-text="option"></option>
+					</select>
+					<p>/</p>
+					<input type="text" v-if="showParInput">
+
+				</div>
+			</div>
+			<div>
+				<p>Endpoint:</p>
+				<p v-text="op.endpoint"></p>
+			</div>
+			<div>
+				<p>Response:</p>
+				<p v-text="op.response"></p>
+			</div>
+			<div>
+				<p>CPU</p>
+			</div>
+		</div>
+
+	</div>
+
+
+	<script>
+		const iTAT = {
+			data() {
+				return {
+
+					op: {
+						name: "your_op",
+						options: [
+							"par",
+							"valid",
+							"id",
+							"name",
+							"path",
+							"storage",
+							"tags",
+							"bypass"
+						],
+						selectedOption: "path",
+						optionIsPar: false,
+						parName: "",
+						value: null,
+						endpoint: "http://localhost:29980/api/op/your_op/path",
+						response: ""
+					},
+
+					inputCPU: 0,
+					selectedCPUMetric: "time_guest",
+					cpuEndpoint: "http://localhost:10190/api/cpu/cpu0/metrics/time_guest/data",
+					cpuResponse: "",
+
+					selectedSysMetric: "n_cpus",
+					systemEndpoint: "http://localhost:10190/api/system/metrics/n_cpus/data",
+					systemResponse: "",
+
+					selectedNVIDIAMetric: "clocks_current",
+					nvidiaEndpoint: "http://localhost:10190/api/nvidia_smi/metrics/clocks_current/data",
+					nvidiaResponse: "",
+
+					selectedDiskMetric: "",
+					diskEndpoint: "http://localhost:10190/api/nvidia_smi/metrics/clocks_current/data",
+					diskResponse: ""
+				}
+			},
+			methods: {
+
+			},
+			computed: {
+				showParInput() {
+					return this.op.selectedOption === "par"
+				}
+			}
+		}
+
+		window.app = Vue.createApp(iTAT).mount("#app")
+
+	</script>
+
+</body>
+
+</html>
