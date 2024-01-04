@@ -2,6 +2,7 @@
 _OLD/
 __pycache__/
 /_OLD
+.DS_Store
 
 # todo
 todo.txt
