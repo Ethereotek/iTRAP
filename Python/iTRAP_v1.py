@@ -77,7 +77,8 @@ class ITRAP():
 			"/api/banana/namedOps/op/<name>/attribute/<attribute>": {'handlers': {'GET': self.getNamedOpAttribute, 'PUT': self.putNamedOpAttribute}, 'scope': 'namedOps.attribute'},
 			"/api/banana/namedOps/op/<name>/par/<par>": {'handlers': {'GET': self.getNamedOpPar, 'PUT': self.putNamedOpPar}, 'scope': 'namedOps.par'},
 			"/api/banana/namedPars": {'handlers': {'GET': self.getNamedPars}, 'scope': 'namedPars'},
-			"/api/banana/namedPars/par/<name>": {'handlers': {'GET': self.getNamedPar, 'PUT': self.putNamedPar}, 'scope': 'namedPars'}
+			"/api/banana/namedPars/par/<name>": {'handlers': {'GET': self.getNamedPar, 'PUT': self.putNamedPar}, 'scope': 'namedPars'},
+			"/api/banana/op/par/pulse":{'handlers':{'POST':self.postOpParPulse}, 'scope':'ops.par'}
 
 		}
 
@@ -262,6 +263,7 @@ class ITRAP():
 			@wraps(func)
 			def wrapper(self, *args, **kwargs):
 				data = None
+				# print("in wrapper")
 				try:
 					data = json.loads(self.request['data'])
 				except:
@@ -271,8 +273,10 @@ class ITRAP():
 				params = data.get('params')
 				schema = thisSchema
 				if not params:
-					#print('no params')
+					# get the parameters and push it to the data dictionary
 					params = self.parameters
+					data.update(params)
+
 				hasParams, validTypes = request_validation.validateParametersDict(
 					data, schema)
 				if hasParams and validTypes:
@@ -1534,6 +1538,26 @@ class ITRAP():
 				'error': 'The operator or parameter does not exist.'
 			}
 			self.formatResponse(404, 'Resource Not Found', data)
+
+	@handler(schemas['post_op_par_pulse'])
+	def postOpParPulse(self, data):
+		path = data.get('path') or int(data.get('id'))
+		par = data.get('par')
+		operator = op(path)
+		par_exists = (operator.par[par] != None)
+		if par_exists:
+			try:
+				operator.par[par].pulse()
+				self.formatResponse(200, 'success', data = {})
+			except:
+				data = {'error': {'message': 'UnknownError'}}
+				self.formatResponse(500, 'Internal Server Error', data)
+		else:
+			data = {
+				'error':'The operator or parameter does not exist.'
+			}
+			self.formatResponse(404, 'Resource Not Found', data)
+
 # -------------------------------------------------------------#
 # ---------------------- NAMED OPERATORS ----------------------#
 # -------------------------------------------------------------#
