@@ -130,7 +130,6 @@ class ITRAP():
 		uri = request['uri']
 		if uri.endswith('/'):
 			uri = uri[:-1]			
-		print(uri)
 		method = request['method']
 
 		self.response['content-type'] = 'application/json'
@@ -225,6 +224,8 @@ class ITRAP():
 
 	def quit(self):
 		project.quit(force=True)
+	def load(self, path):
+		project.load(path)
 
 	def formatMissingParamMessage(self, param):
 		data = {
@@ -270,7 +271,7 @@ class ITRAP():
 				params = data.get('params')
 				schema = thisSchema
 				if not params:
-					print('no params')
+					#print('no params')
 					params = self.parameters
 				hasParams, validTypes = request_validation.validateParametersDict(
 					data, schema)
@@ -893,7 +894,9 @@ class ITRAP():
 				code = 200
 				message = 'OK'
 				try:
+					## self.load(path) <- in older git rev
 					project.load(path)
+					self.formatResponse(201, 'Loading', {'success':{}})
 				except Exception as e:
 					code = 500
 					message = 'Internal Server Error'
@@ -1099,7 +1102,7 @@ class ITRAP():
 
 	def getMonitorAttribute(self):
 		index = int(self.parameters.get('mon'))
-		print(index)
+		# print(index)
 		thisMonitor = self.get_monitor(index)
 		attribute = self.parameters.get('attribute')
 		attribute_name = copy.copy(attribute)
@@ -1145,7 +1148,7 @@ class ITRAP():
 	def getOp(self):
 		path = self.parameters.get('path') or int(self.parameters.get('id'))
 		operator = op(path)
-		print(operator)
+		# print(operator)
 		if not operator:
 			self.formatResponse(404, 'Resource Not Found', {})
 			return
@@ -1207,7 +1210,9 @@ class ITRAP():
 			self.formatResponse(404, 'Not Found', data)
 		else:
 			op(path).destroy()
-			self.formatResponse(204, 'No Content', {})
+			# self.formatResponse(204, 'No Content', {})
+			self.response["Content-Length"] = 0
+			self.formatResponse(204, 'No Content')
 
 	@handleGet(schemas['get_op_attribute'])
 	def getOpAttribute(self):
@@ -1251,15 +1256,31 @@ class ITRAP():
 			except Exception as e:
 				self.format500(error=type(e).__name__)
 				return
-
+			_id = operator.id
 			data = {
-				'name': 'opserator Attribute',
-				'scope': 'ops.attribute',
-				'data': {
+				'success':{
+					'name':f'Operator {_id} {attribute}',
+					'scope':'ops.attribute',
+					'data':{
 						'value': value,
 						'type': str(type(value).__name__)
+					},
+					'links':[
+						{
+							'rel':'self',
+							'href':self.rel_prefix + f'api/banana/op/{attribute}?id={_id}'
+						}
+					]
 				}
 			}
+			# data = {
+			# 	'name': 'opserator Attribute',
+			# 	'scope': 'ops.attribute',
+			# 	'data': {
+			# 			'value': value,
+			# 			'type': str(type(value).__name__)
+			# 	}
+			# }
 
 			self.formatResponse(200, 'OK', data)
 		else:
@@ -1500,9 +1521,9 @@ class ITRAP():
 		par = params['par']
 		val = params['val']
 		operator = op(path)
-
+		# par_exists = (operator.par[par] != None)
+		# if operator and par_exists:
 		if operator and operator.par[par]:
-
 			operator.par[par].val = val
 			data = {
 				'success': True
@@ -1716,7 +1737,6 @@ class ITRAP():
 						}
 						self.formatResponse(404, 'Resource Not Found', data)
 					_type = type(getattr(_par, 'val'))
-					print(_type)
 					try:
 						_value = _type(_value)
 					except:
