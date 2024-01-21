@@ -135,6 +135,23 @@ schemas = {
             'parent'
         ]
     },
+    'post_op_par_pulse':{
+        'parameters':{
+            'path':{
+                'type':str
+            },
+            'id':{
+                'type':int
+            },
+            'par':{
+                'type':str
+            }
+        },
+        'required':[
+            ['id','path'],
+            'par'
+        ]
+    },
     'get_op_attribute':{
         'parameters':{
             'path':{

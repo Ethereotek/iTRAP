@@ -19,6 +19,7 @@ class ITRAP():
 		self.thisComp = thisComp
 		self.itrap_port = thisComp.par.Port
 		self.ip_address = thisComp.par.Ipaddress
+		self.secure = thisComp.par.Secure
 
 		if not self.thisComp.storage.get('Permissions'):
 			self.thisComp.store('Permissions', {'keys': {}, 'users': {}})
@@ -77,7 +78,8 @@ class ITRAP():
 			"/api/banana/namedOps/op/<name>/attribute/<attribute>": {'handlers': {'GET': self.getNamedOpAttribute, 'PUT': self.putNamedOpAttribute}, 'scope': 'namedOps.attribute'},
 			"/api/banana/namedOps/op/<name>/par/<par>": {'handlers': {'GET': self.getNamedOpPar, 'PUT': self.putNamedOpPar}, 'scope': 'namedOps.par'},
 			"/api/banana/namedPars": {'handlers': {'GET': self.getNamedPars}, 'scope': 'namedPars'},
-			"/api/banana/namedPars/par/<name>": {'handlers': {'GET': self.getNamedPar, 'PUT': self.putNamedPar}, 'scope': 'namedPars'}
+			"/api/banana/namedPars/par/<name>": {'handlers': {'GET': self.getNamedPar, 'PUT': self.putNamedPar}, 'scope': 'namedPars'},
+			"/api/banana/op/par/pulse":{'handlers':{'POST':self.postOpParPulse}, 'scope':'ops.par'}
 
 		}
 
@@ -130,7 +132,6 @@ class ITRAP():
 		uri = request['uri']
 		if uri.endswith('/'):
 			uri = uri[:-1]			
-		print(uri)
 		method = request['method']
 
 		self.response['content-type'] = 'application/json'
@@ -157,25 +158,25 @@ class ITRAP():
 			self.formatResponse(405, 'Method Not Allowed', {})
 			return self.response
 		
-		self.permission = self.getPermission()
-		if not self.permission:
-			self.formatResponse(401, 'Not Authorized', {
-								'error': 'no permissions found'})
-			return self.response
+		if self.secure:
+			self.permission = self.getPermission()
+			if not self.permission:
+				self.formatResponse(401, 'Not Authorized', {
+									'error': 'no permissions found'})
+				return self.response
 
-		# check that scope is allowed in apiKey's permission
-		scope += ('.' + method.lower())
-		permitted = self.permission.validatePermission(scope)
+			# check that scope is allowed in apiKey's permission
+			scope += ('.' + method.lower())
+			permitted = self.permission.validatePermission(scope)
 
-		if not permitted:
-			self.formatResponse(401, 'Not Authorized', {
-								'error': 'not permitted'})
-			return self.response
+			if not permitted:
+				self.formatResponse(401, 'Not Authorized', {
+									'error': 'not permitted'})
+				return self.response
 
 		# add the parameters collected from the URL parsing to self.parameters
 		if params:
 			self.parameters.update(params)
-
 		handler()
 
 		return self.response
@@ -225,6 +226,8 @@ class ITRAP():
 
 	def quit(self):
 		project.quit(force=True)
+	def load(self, path):
+		project.load(path)
 
 	def formatMissingParamMessage(self, param):
 		data = {
@@ -261,17 +264,22 @@ class ITRAP():
 			@wraps(func)
 			def wrapper(self, *args, **kwargs):
 				data = None
+				# print("in wrapper")
 				try:
+					print("loading json")
 					data = json.loads(self.request['data'])
 				except:
+					print("failed load json")
 					self.formatResponse(400, 'Bad Request', {
 										'error': 'Bad JSON formatting.'})
 					return
 				params = data.get('params')
 				schema = thisSchema
 				if not params:
-					print('no params')
+					# get the parameters and push it to the data dictionary
 					params = self.parameters
+					data.update(params)
+
 				hasParams, validTypes = request_validation.validateParametersDict(
 					data, schema)
 				if hasParams and validTypes:
@@ -288,6 +296,7 @@ class ITRAP():
 			@wraps(func)
 			def wrapper(self, *args, **kwargs):
 				params = self.parameters
+				print(params)
 				schema = thisSchema
 				hasParams, validTypes = request_validation.validateParametersDict(
 					params, schema)
@@ -893,7 +902,9 @@ class ITRAP():
 				code = 200
 				message = 'OK'
 				try:
+					## self.load(path) <- in older git rev
 					project.load(path)
+					self.formatResponse(201, 'Loading', {'success':{}})
 				except Exception as e:
 					code = 500
 					message = 'Internal Server Error'
@@ -1099,7 +1110,7 @@ class ITRAP():
 
 	def getMonitorAttribute(self):
 		index = int(self.parameters.get('mon'))
-		print(index)
+		# print(index)
 		thisMonitor = self.get_monitor(index)
 		attribute = self.parameters.get('attribute')
 		attribute_name = copy.copy(attribute)
@@ -1145,7 +1156,7 @@ class ITRAP():
 	def getOp(self):
 		path = self.parameters.get('path') or int(self.parameters.get('id'))
 		operator = op(path)
-		print(operator)
+		# print(operator)
 		if not operator:
 			self.formatResponse(404, 'Resource Not Found', {})
 			return
@@ -1207,7 +1218,9 @@ class ITRAP():
 			self.formatResponse(404, 'Not Found', data)
 		else:
 			op(path).destroy()
-			self.formatResponse(204, 'No Content', {})
+			# self.formatResponse(204, 'No Content', {})
+			self.response["Content-Length"] = 0
+			self.formatResponse(204, 'No Content')
 
 	@handleGet(schemas['get_op_attribute'])
 	def getOpAttribute(self):
@@ -1251,15 +1264,31 @@ class ITRAP():
 			except Exception as e:
 				self.format500(error=type(e).__name__)
 				return
-
+			_id = operator.id
 			data = {
-				'name': 'opserator Attribute',
-				'scope': 'ops.attribute',
-				'data': {
+				'success':{
+					'name':f'Operator {_id} {attribute}',
+					'scope':'ops.attribute',
+					'data':{
 						'value': value,
 						'type': str(type(value).__name__)
+					},
+					'links':[
+						{
+							'rel':'self',
+							'href':self.rel_prefix + f'api/banana/op/{attribute}?id={_id}'
+						}
+					]
 				}
 			}
+			# data = {
+			# 	'name': 'opserator Attribute',
+			# 	'scope': 'ops.attribute',
+			# 	'data': {
+			# 			'value': value,
+			# 			'type': str(type(value).__name__)
+			# 	}
+			# }
 
 			self.formatResponse(200, 'OK', data)
 		else:
@@ -1493,16 +1522,16 @@ class ITRAP():
 			}
 		self.formatResponse(200, 'OK', data)
 
-	@handleGet(schemas['put_op_par'])
-	def putOpPar(self):
-		params = self.parameters
-		path = params.get('path') or int(params.get('id'))
-		par = params['par']
-		val = params['val']
+	@handler(schemas['put_op_par'])
+	def putOpPar(self, data):
+		# params = self.parameters
+		path = data.get('path') or int(data.get('id'))
+		par = data['par']
+		val = data['val']
 		operator = op(path)
-
-		if operator and operator.par[par]:
-
+		par_exists = (operator.par[par] != None)
+		if operator and par_exists:
+		# if operator and operator.par[par]:
 			operator.par[par].val = val
 			data = {
 				'success': True
@@ -1513,6 +1542,26 @@ class ITRAP():
 				'error': 'The operator or parameter does not exist.'
 			}
 			self.formatResponse(404, 'Resource Not Found', data)
+
+	@handler(schemas['post_op_par_pulse'])
+	def postOpParPulse(self, data):
+		path = data.get('path') or int(data.get('id'))
+		par = data.get('par')
+		operator = op(path)
+		par_exists = (operator.par[par] != None)
+		if par_exists:
+			try:
+				operator.par[par].pulse()
+				self.formatResponse(200, 'success', data = {})
+			except:
+				data = {'error': {'message': 'UnknownError'}}
+				self.formatResponse(500, 'Internal Server Error', data)
+		else:
+			data = {
+				'error':'The operator or parameter does not exist.'
+			}
+			self.formatResponse(404, 'Resource Not Found', data)
+
 # -------------------------------------------------------------#
 # ---------------------- NAMED OPERATORS ----------------------#
 # -------------------------------------------------------------#
@@ -1716,7 +1765,6 @@ class ITRAP():
 						}
 						self.formatResponse(404, 'Resource Not Found', data)
 					_type = type(getattr(_par, 'val'))
-					print(_type)
 					try:
 						_value = _type(_value)
 					except:

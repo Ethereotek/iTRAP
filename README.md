@@ -2,7 +2,8 @@
  Interface for Touch Remote Application Programming
 
 ## Introduction
-Banana is a RESTful API intended to provide a standardized remote access protocol to Derivative's TouchDesigner. While the Python API provides users extensive capabilities from within TouchDesigner, and the native operators support almost any major communication protocol you can think of, there is no defacto way to remote into a TouchDesigner instance. Banana is an attempt to remedy this. Much of the Python API is now accessible through RESTful HTTP calls, and there is a large interface for interacting with operators and parameters in a way that makes it easy when outside of the TouchDesigner environment, such as ID maps, NAPs, and more.
+
+Banana is a RESTful API intended to provide a standardized remote access protocol to Derivative's TouchDesigner. While the Python API provides users extensive capabilities from within TouchDesigner, and there are native operators for almost any major communication protocol you can think of, there is no defacto way to remote into a TouchDesigner instance. Banana is an attempt to remedy this. Much of the Python API is now accessible through RESTful HTTP calls, and there is a large interface for interacting with operators and parameters in a way that makes it easy when outside of the TouchDesigner environment, such as ID maps, NAPs, and more. Additionally, the iTRAP interface can be extended through the Monkey API, which allows users to leverage the tools already in place for routing API calls, extracting parameters, and validating data.
 
 ## Getting Started 
 The Banana API is served through iTRAP - Interface for Touch Remote Access Protocol - a dependency-free component that you can simply drag and drop from the `/Build` directory into your project.
@@ -72,3 +73,10 @@ The Banana API is designed to be used in conjunction with [NAPs](https://github.
 In *`Documentation/Postman`* you can find a postman environment and collection. This contains every endpoint and supported method. They are configured to work with the `example.toe` project.
 
 To get started, simply import the environment and collection, update the `token` variable in the environment with one you generated. Operator ID's are not consistent between project loads, so any endpoints that use it may need editing. There are also a couple that require directory paths on the host's machine, so you will have to edit those to match your configuration.
+
+### Updates 21 Jan 2024
+- Added call for pulsing a parameter (`[POST] /op/par/pulse`)
+- Bug fixes and updated response objects to some existing calls
+- Security is now optional via a parameter on the iTRAP tox. Switch this off to bypass requiring a token for requests
+- CORS error when accessing Swagger doc from different machine resolved
+- Updates to Swagger API documentation

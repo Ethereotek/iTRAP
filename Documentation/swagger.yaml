@@ -42,10 +42,19 @@ tags:
       url: https://docs.derivative.ca/Monitors_Class
   - name: operators
     description: Access and perform methods on all operators
+    externalDocs:
+      description: Derivative Documentation
+      url: https://docs.derivative.ca/OP_Class
   - name: named operators
     description: Access and perform methods on operators that have been aliased using NAPs
+    externalDocs:
+      description: NAPs Github
+      url: https://github.com/Ethereotek/NAPs
   - name: named parameters
     description: Access and perform methods on parameters that have been aliased using NAPs
+    externalDocs:
+      description: NAPs Github
+      url: https://github.com/Ethereotek/NAPs
 paths:
   /permission:
     get:
@@ -74,6 +83,8 @@ paths:
                           enum:
                             - app.*.put
                             - project.*.post
+        '401':
+          $ref: '#/components/responses/401'
   /app/architecture:
     get:
       tags:
@@ -124,6 +135,8 @@ paths:
                         href:
                           type: string
                           default: http://localhost:29980/api/banana/app/architecture
+        '401':
+          $ref: '#/components/responses/401'
   /app/build:
     get:
       tags:
@@ -172,6 +185,8 @@ paths:
                         href: 
                           type: string
                           default: http://localhost:29980/api/banana/app/build
+        '401':
+          $ref: '#/components/responses/401'
   /app/launchTime:
     get:
       tags:
@@ -216,10 +231,17 @@ paths:
                       properties:
                         rel:
                           type: string
-                          default: self
                         href:
                           type: string
-                          default: http://localhost:29980/api/banana/app/launchTime
+                    default:
+                      - rel: self
+                        href: http://localhost:29980/api/banana/app/launchTime
+                      - rel: app.startTimestamp
+                        href: http://localhost:29980/api/banana/app/startTimestamp
+                        
+
+        '401':
+          $ref: '#/components/responses/401'
   /app/startTimestamp:
     get:
       tags:
@@ -264,10 +286,16 @@ paths:
                       properties:
                         rel:
                           type: string
-                          default: self
                         href:
                           type: string
-                          default: http://localhost:29980/api/banana/app/startTimestamp
+                    default:
+                      - rel: self
+                        href: http://localhost:29980/api/banana/app/startTimestamp
+                      
+                      - rel: app.launchTime
+                        href: http://localhost:29980/api/banana/app/launchTime
+        '401':
+          $ref: '#/components/responses/401'
   /app/osName:
     get:
       tags:
@@ -316,6 +344,8 @@ paths:
                         href: 
                           type: string
                           default: http://localhost:29980/api/banana/app/osName
+        '401':
+          $ref: '#/components/responses/401'
   /app/power:
     get:
       tags:
@@ -363,6 +393,8 @@ paths:
                         href: 
                           type: string
                           default: http://localhost:29980/api/banana/app/power
+        '401':
+          $ref: '#/components/responses/401'
     put:
       tags:
         - application
@@ -419,6 +451,9 @@ paths:
                               default: http://localhost:29980/api/banana/app/power
         '400':
           $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+          
   /app/product:
     get:
       tags:
@@ -465,10 +500,18 @@ paths:
                       properties:
                         rel:
                           type: string
-                          default: self
                         href: 
                           type: string
-                          default: http://localhost:29980/api/banana/app/product
+                    default:
+                      - rel: self
+                        href: http://localhost:29980/api/banana/app/product
+                      - rel: app.version
+                        href: http://localhost:29980/api/banana/app/version
+                      - rel: app.build
+                        href: http://localhost:29980/api/banana/app/build
+                      
+        '401':
+          $ref: '#/components/responses/401'
   /app/version:
     get:
       tags:
@@ -517,10 +560,17 @@ paths:
                       properties:
                         rel:
                           type: string
-                          default: self
                         href: 
                           type: string
-                          default: http://localhost:29980/api/banana/app/version
+                      default:
+                      - rel: app.version
+                        href: http://localhost:29980/api/banana/app/product
+                      - rel: self
+                        href: http://localhost:29980/api/banana/app/version
+                      - rel: app.build
+                        href: http://localhost:29980/api/banana/app/build
+        '401':
+          $ref: '#/components/responses/401'
   /app/play:
     get:
       tags:
@@ -567,10 +617,19 @@ paths:
                         href: 
                           type: string
                           default: http://localhost:29980/api/banana/app/play                
+        '401':
+          $ref: '#/components/responses/401'
     put:
       tags:
         - application
       summary: Sets the play state of the transport
+      description: |- 
+        Accepts the following values:  
+          - `-1`  for back  
+          
+          -  `0`  for pause
+          -  `1`  for forward
+  
       requestBody:
         content:
           application/json:
@@ -620,6 +679,8 @@ paths:
                               default: http://localhost:29980/api/banana/app/play                    
         '400':
           $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
   
   /project/name:
 
@@ -670,6 +731,8 @@ paths:
                         href: 
                           type: string
                           default: http://192.168.50.23:29980/api/banana/project/name
+        '401':
+          $ref: '#/components/responses/401'
   /project/saveVersion:
     get:
       tags:
@@ -702,10 +765,27 @@ paths:
                     
                       value: 
                         type: string
-                        default: '099'
+                        example: '099'
+                        enum:
+                          - '099'
+                          - '088'
+                          - '077'
                       type: 
                         type: string
-                        default: str
+                        enum: 
+                          - str
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/link'
+                    
+                    default:
+                      - rel: self
+                        href: http://localhost:29980/api/banana/project/saveVersion
+                      - rel: Application Version
+                        href: http://localhost:29980/api/banana/app/version
+        '401':
+          $ref: '#/components/responses/401'
   /project/saveBuild:
     get:
       tags:
@@ -735,13 +815,25 @@ paths:
                   data:
                     type: object
                     properties:
-                    
                       value: 
                         type: string
-                        default: '2022.32660'
+                        example: '2022.32660'
                       type: 
                         type: string
-                        default: str        
+                        enum:
+                          - str 
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/link'
+                    
+                    default:
+                      - rel: self
+                        href: http://localhost:29980/api/banana/project/saveBuild
+                      - rel: Application Build
+                        href: http://localhost:29980/api/banana/app/build
+        '401':
+          $ref: '#/components/responses/401'
   /project/saveTime:
     get:
       tags:
@@ -774,10 +866,14 @@ paths:
                     
                       value: 
                         type: string
-                        default: 'Thu May  4 21:34:54 2023'
+                        example: 'Thu May  4 21:34:54 2023'
                       type: 
                         type: string
-                        default: datetime
+                        enum: 
+                          - datetime
+        '401':
+          $ref: '#/components/responses/401'
+  
   /project/saveOSName:
     get:
       tags:
@@ -809,10 +905,16 @@ paths:
                     properties:
                       value:
                         type: string
-                        default: Windows
+                        example: Windows
+                        enum:
+                          - Windows
+                          - MacOS
                       type: 
                         type: string
-                        default: str
+                        enum:
+                          - str
+        '401':
+          $ref: '#/components/responses/401'
   /project/saveOSVersion:
     get:
       tags:
@@ -845,10 +947,11 @@ paths:
                     properties:
                       value: 
                         type: string
-                        default: '10'
+                        example: '10'
                       type:
                         type: string
-                        default: str
+                        enum:
+                          - str
                   links:
                     type: array
                     items:
@@ -860,6 +963,8 @@ paths:
                         href: 
                           type: string
                           default: http://localhost:29980/api/banana/project/saveOSVersion
+        '401':
+          $ref: '#/components/responses/401'
   /project/paths:
     get:
       tags:
@@ -872,6 +977,43 @@ paths:
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum:
+                      - Project Paths
+                  scope:
+                    type: string
+                    enum:
+                      - project.paths
+                  description:
+                    type: string
+                    enum:
+                      - A dictionary which can be used to define URL-syntax path prefixes, enabling you to move your media to different locations easily.
+                  built-in:
+                    type: boolean
+                    enum:
+                      - true
+                      
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: object
+                        example:
+                          content: 'C:\Users\user\Documents\TouchDesigner\Project1\Content'
+                          Documents: 'C:\Users\user\Documents'
+                      type:
+                        type: string
+                        enum:
+                          - dict
+        '401':
+          $ref: '#/components/responses/401'
+          
     # put:
     #   tags:
     #     - project
@@ -897,7 +1039,51 @@ paths:
       responses:
         '200':
           description: 'OK'
-  /project/paths/{name}:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        default: Project Path
+                      scope:
+                        type: string
+                        enum:
+                          - project.paths
+                      description:
+                        type: string
+                      built-in:
+                        type: boolean
+                        enum:
+                          - true
+                      data:
+                        type: object
+                        properties:
+                          value:
+                            type: object
+                            example:
+                              ExamplePath: C:\Users\user\ExampleDirectory
+                          type:
+                            type: string
+                            enum:
+                              - dict
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conflict:
+                    type: string
+                    example: The named path X already exists. Ues PUT to change it or choose a different name.
+  /project/paths/path/{name}:
       put:
         tags:
           - project
@@ -916,6 +1102,34 @@ paths:
         responses:
           '200':
             description: 'OK'
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: Project Path X
+                        scope:
+                          type: string
+                          enum:
+                            - project.paths
+                        data:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                              example: C:\Users\user\Documents\ExampleDirectory
+                            type:
+                              type: string
+                              enum:
+                                - str
+          '401':
+            $ref: '#/components/responses/401'
+            
   /project/cookRate:
     get:
       tags:
@@ -950,7 +1164,8 @@ paths:
                       type: 
                         type: string
                         default: float
-                  
+        '401':
+          $ref: '#/components/responses/401'
     put:
       tags:
         - project
@@ -993,6 +1208,9 @@ paths:
                             default: float
         '400':
           $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+          
   /project/realTime:
     get:
       tags:
@@ -1028,6 +1246,9 @@ paths:
                       type: 
                         type: string
                         default: float    
+        '401':
+          $ref: '#/components/responses/401'
+          
     put:
       tags:
         - project
@@ -1068,6 +1289,9 @@ paths:
                           type: 
                             type: string
                             default: bool
+        '401':
+          $ref: '#/components/responses/401'
+          
   /project/performOnStart:
     get:
       tags:
@@ -1076,7 +1300,36 @@ paths:
       responses:
         '200':
           description: 'OK'
-    
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum:
+                      - Project Perform on Start
+                  scope:
+                    type: string
+                    enum:
+                      - project.performOnStart
+                  description:
+                    type: string
+                    default: If True, project starts in perform mode
+                  built-in:
+                    type: boolean
+                    enum:
+                      - true
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: boolean
+                        default: false
+                      type:
+                        $ref: '#/components/schemas/pythonBool'
+        '401':
+          $ref: '#/components/responses/401'
     put:
       tags:
         - project
@@ -1093,6 +1346,10 @@ paths:
       responses:
         '200':
           description: 'OK'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
   /project/load:
     post:
       tags:
@@ -1182,6 +1439,12 @@ paths:
                         type: string
                         enum:
                           - int
+                  links:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          $ref: '#/components/responses/401'
   /sysinfo/ram:
     get:
       tags:
@@ -1218,7 +1481,12 @@ paths:
                         type: string
                         enum:
                           - int
- 
+                  links:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          $ref: '#/components/responses/401'
   /ui/masterVolume:
     get:
       tags:
@@ -1247,6 +1515,36 @@ paths:
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum:
+                      - UI Master Volume
+                  scope:
+                    type: string
+                    enum:
+                      - ui.masterVolume
+                  description:
+                    type: string
+                    enum:
+                      - ''
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        type: number
+                        minimum: 0.0
+                        maximum: 1.0
+                      type:
+                        $ref: '#/components/schemas/pythonFloat'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
   /monitors:
     get:
       tags:
@@ -1465,7 +1763,6 @@ paths:
       responses:
         '200':
           description: 'OK'
-  
   /op/opIdMap:
     get:
       tags:
@@ -1615,7 +1912,6 @@ paths:
       responses:
         '200':
           description: 'OK'
-          
   /op/attributes/{attribute}:
     get:
       tags:
@@ -1636,6 +1932,40 @@ paths:
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Operator X {attribute-name}
+                  scope:
+                    type: string
+                    example: ops.attribute
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        oneOf:
+                          - type: string
+                          - type: boolean
+                          - type: number
+                      type:
+                        $ref: '#/components/schemas/dataTypeEnum'
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rel:
+                          type: string
+                          enum:
+                            - self
+                        href:
+                          type: string
+                          example: http://localhost:29980/api/banana/op/name?id=5972
+
     put:
       tags:
         - operators
@@ -1653,7 +1983,43 @@ paths:
       responses:
         '200':
           description: 'OK'
-
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: Operator X {attribute-name}
+                      scope:
+                        type: string
+                        enum:
+                          - ops.attribute
+                      data:
+                        type: object
+                        properties:
+                          value:
+                            oneOf:
+                              - type: string
+                              - type: number
+                              - type: boolean
+                          type:
+                            $ref: '#/components/schemas/dataTypeEnum'
+                      links:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            rel:
+                              type: string
+                              enum:
+                                - self
+                            href:
+                              type: string
+                              example: http://192.168.50.23:29980/api/banana/op/name?id=41769
   /op/id:
     get:
       tags:
@@ -1698,7 +2064,6 @@ paths:
                         type: string
                         enum:
                           - int
-
   /op/storage:
     get:
       tags:
@@ -1833,7 +2198,6 @@ paths:
       responses:
         '200':
           description: 'OK'
-
   /op/par:
     get:
       tags:
@@ -1850,6 +2214,37 @@ paths:
       responses:
         '200':
           description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: 'Operator X parameter Y'
+                  scope:
+                    type: string
+                    enum:
+                      - ops.par
+                  description:
+                    type: string
+                    enum:
+                      - ''
+                  data:
+                    type: object
+                    properties:
+                      value:
+                        oneOf:
+                          - type: number
+                          - type: string
+                          - type: boolean
+                      type:
+                        type: string
+                        enum:
+                          - int
+                          - float
+                          - bool
+                          - str
     put: 
       tags:
         - operators
@@ -1873,7 +2268,26 @@ paths:
       responses:
         '200':
           description: 'OK'
-  
+  /op/par/puse:
+    post:
+      tags:
+        - operators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - path
+                - par
+              properties:
+                path:
+                  type: string
+                par:
+                  type: string
+      responses:
+        '200':
+          description: 'OK'
   # /namedOps:
   #   get:
   #     tags:
@@ -1950,7 +2364,6 @@ paths:
       responses:
         '200':
           description: 'OK'
-          
   /namedOps/op/{name}/par/{par}:
     get:
       tags:
@@ -1969,10 +2382,65 @@ paths:
           required: true
       responses:
         '200':
-          'description': 'OK'
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            minimum: 0
+                            example: 41736
+                          name:
+                            type: string
+                            description: Name of the operator as it appears in the TouchDesigner network.
+                            example: noise1
+                          path:
+                            type: string
+                            example: /project1/noise1
+                          time:
+                            type: object
+                            properties:
+                              path: 
+                                type: string
+                                default: /local/time
+                              id:
+                                type: number
+                                example: 6159
+                          parent:
+                            type: object
+                            properties:
+                              path:
+                                type: string
+                              id:
+                                type: number
+                                example: 5972
+                          type:
+                            type: object
+                            properties:
+                              label:
+                                type: string
+                                example: Noise
+                              family:
+                                $ref: '#/components/schemas/operatorFamily'
+                              type:
+                                type: string
+                              subType:
+                                type: string
+                              OPType:
+                                type: string
+                                default: noiseTOP
+                              
+                              
         '404':
-          'description': 'Resource Not Found'
-        
+          description: 'Resource Not Found'
   # /namedPars:
   #   get:
   #     tags:
@@ -2017,7 +2485,7 @@ paths:
       tags:
         - named parameters
       summary: Update the value of a Named Parameter
-      description: There are two types of Named Parameters in this context, scalar and vector. Scalars are those with a single value, vectors are those such as radius or transform, that have multiple components. They are updated through the same call, but have different request body schemas. Refer to the Postman spec for more detailed examples.
+      description: There are two types of Named Parameters in this context, scalar and vector. Scalars are those with a single value, vectors are those such as radius or transform, that have multiple components. They are updated through the same call. For vector parameters, the top-level name is the Named Parameter, the contained names will be the actual names of the parameters in TouchDesigner, such as "tx" or "ry".
       parameters:
         - name: name
           in: path
@@ -2026,37 +2494,144 @@ paths:
             type: string
 
       requestBody:
+
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                parameter:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    type:
-                      type: string
-                      enum:
-                        - scalar
-                        - vector
-                    value:
-                      oneOf:
-                        - type: string
-                        - type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              value:
-                                type: string
+              oneOf:
+              - type: object
+                properties:
+                  parameter:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                          - scalar
+                      value:
+                        oneOf:
+                          - type: string
+                          - type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                value:
+                                  oneOf:
+                                    - type: string
+                                    - type: number
+                                    - type: boolean
+              - type: object
+                properties:
+                  parameter:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      type: 
+                        type: string
+                        enum:
+                          - vector
+                      value:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: rx
+                            value:
+                              oneOf:
+                                - type: string
+                                - type: number
+                                - type: boolean
+
       responses:
         '200':
           description: 'OK'
-            
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: object
+                        properties:
+                          name: 
+                            type: string
+                            example: geo_tx
+                          scope:
+                            type: string
+                            enum:
+                              - namedPars
+                          description:
+                            type: string
+                          data:
+                            type: object
+                            properties:
+                              value:
+                                oneOf:
+                                  - type: number
+                                  - type: string
+                              type:
+                                $ref: '#/components/schemas/dataTypeEnum'
+                          
+                  - type: object
+                    properties:
+                      success:
+                        type: array
+                        items:
+                          type: object
+                          example:
+                            rx:
+                              value: 90.0
+                              type: 'float'
+ 
 components:
+  schemas:
+    operatorLabels:
+      type: string
+      enum:
+        - Noise
+    operatorFamily:
+      type: string
+      enum:
+        - COMP
+        - TOP
+        - CHOP
+        - DAT
+        - SOP
+        - MAT
+    dataTypeEnum:
+      type: string
+      enum:
+        - float
+        - int
+        - str
+        - bool
+    pythonFloat:
+      type: string
+      enum:
+        - float
+    pythonString:
+      type: string
+      enum:
+        - str
+    pythonBool:
+      type: string
+      enum:
+        - bool
+    link:
+      type: object
+      properties:
+        rel:
+          type: string
+        href:
+          type: string
   parameters:
     QueryPath:
       name: path
@@ -2108,6 +2683,11 @@ components:
         application/json:
           schema:
             type: object
+            properties:
+              error:
+                type: string
+                enum:
+                  - no permissions found
     '404':
       description: Resource Not Found
       content:

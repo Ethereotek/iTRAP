@@ -3,6 +3,8 @@ _OLD/
 __pycache__/
 /_OLD
 .DS_Store
+Backup
 
 # todo
 todo.txt
+notes.txt
