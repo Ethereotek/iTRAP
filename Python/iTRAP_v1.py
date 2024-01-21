@@ -177,7 +177,6 @@ class ITRAP():
 		# add the parameters collected from the URL parsing to self.parameters
 		if params:
 			self.parameters.update(params)
-
 		handler()
 
 		return self.response
@@ -267,8 +266,10 @@ class ITRAP():
 				data = None
 				# print("in wrapper")
 				try:
+					print("loading json")
 					data = json.loads(self.request['data'])
 				except:
+					print("failed load json")
 					self.formatResponse(400, 'Bad Request', {
 										'error': 'Bad JSON formatting.'})
 					return
@@ -295,6 +296,7 @@ class ITRAP():
 			@wraps(func)
 			def wrapper(self, *args, **kwargs):
 				params = self.parameters
+				print(params)
 				schema = thisSchema
 				hasParams, validTypes = request_validation.validateParametersDict(
 					params, schema)
@@ -1520,16 +1522,16 @@ class ITRAP():
 			}
 		self.formatResponse(200, 'OK', data)
 
-	@handleGet(schemas['put_op_par'])
-	def putOpPar(self):
-		params = self.parameters
-		path = params.get('path') or int(params.get('id'))
-		par = params['par']
-		val = params['val']
+	@handler(schemas['put_op_par'])
+	def putOpPar(self, data):
+		# params = self.parameters
+		path = data.get('path') or int(data.get('id'))
+		par = data['par']
+		val = data['val']
 		operator = op(path)
-		# par_exists = (operator.par[par] != None)
-		# if operator and par_exists:
-		if operator and operator.par[par]:
+		par_exists = (operator.par[par] != None)
+		if operator and par_exists:
+		# if operator and operator.par[par]:
 			operator.par[par].val = val
 			data = {
 				'success': True

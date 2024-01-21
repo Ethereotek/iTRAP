@@ -2268,6 +2268,26 @@ paths:
       responses:
         '200':
           description: 'OK'
+  /op/par/puse:
+    post:
+      tags:
+        - operators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - path
+                - par
+              properties:
+                path:
+                  type: string
+                par:
+                  type: string
+      responses:
+        '200':
+          description: 'OK'
   # /namedOps:
   #   get:
   #     tags:
