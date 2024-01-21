@@ -19,6 +19,7 @@ class ITRAP():
 		self.thisComp = thisComp
 		self.itrap_port = thisComp.par.Port
 		self.ip_address = thisComp.par.Ipaddress
+		self.secure = thisComp.par.Secure
 
 		if not self.thisComp.storage.get('Permissions'):
 			self.thisComp.store('Permissions', {'keys': {}, 'users': {}})
@@ -157,20 +158,21 @@ class ITRAP():
 			self.formatResponse(405, 'Method Not Allowed', {})
 			return self.response
 		
-		self.permission = self.getPermission()
-		if not self.permission:
-			self.formatResponse(401, 'Not Authorized', {
-								'error': 'no permissions found'})
-			return self.response
+		if self.secure:
+			self.permission = self.getPermission()
+			if not self.permission:
+				self.formatResponse(401, 'Not Authorized', {
+									'error': 'no permissions found'})
+				return self.response
 
-		# check that scope is allowed in apiKey's permission
-		scope += ('.' + method.lower())
-		permitted = self.permission.validatePermission(scope)
+			# check that scope is allowed in apiKey's permission
+			scope += ('.' + method.lower())
+			permitted = self.permission.validatePermission(scope)
 
-		if not permitted:
-			self.formatResponse(401, 'Not Authorized', {
-								'error': 'not permitted'})
-			return self.response
+			if not permitted:
+				self.formatResponse(401, 'Not Authorized', {
+									'error': 'not permitted'})
+				return self.response
 
 		# add the parameters collected from the URL parsing to self.parameters
 		if params:
