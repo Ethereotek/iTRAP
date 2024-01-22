@@ -69,6 +69,48 @@ To expose operators through their ID's, pulse the `Map OP ID` parameter. Drag an
 ## Named Operators and Parameters
 The Banana API is designed to be used in conjunction with [NAPs](https://github.com/Ethereotek/NAPs), which allows you to create project-wide shortcuts, or aliases, to operators and parameters. A guide to using NAPs can be found in the README on the NAPs github page. It is not required to use NAPs, however, and any NAPs relevant endpoints will simply return 404 if it is not employed.
 
+## Extending with a Monkey API
+Users can add their own routes and leverage the IO infrastructure of the iTRAP class.
+
+A monkey extension is defined in Python and fed into the iTRAP tox via the DAT in. It consists of a routing dictionary, handler functions, and, optionally, request schema.
+
+Here is an example of how to structure a monkey extension:	
+
+```	
+def myHandler(itrap):
+	request = itrap.request
+	schema = itrap.schemas['my_schema']
+	pars = request.pars
+	hasParams, paramsValid = itrap.validateParams(pars, schema)
+	
+	if hasParams and paramsValid:
+		## handler logic
+		itrap.formatResponse(200, 'OK', {'data':{}})
+	else:
+		itrap.formatResponse(400, 'Bad Format', {'data':{'error':'invalid pars'}})
+
+monkey_routes = {
+	'my/new/route':{'handlers':{'GET':myHandler}}
+}
+monkey_schemas = {
+	'my_schema':{
+		'parameters':{
+			'par1':{
+				'type':str
+			},
+			'par2':{
+				'type':int
+			}
+		},
+		'required':['par1']
+	}
+}
+```
+In the example above, a handler function is defined that takes the itrap extension as its one argument. This contains the web request, including the uri, parameters, method, etc. as well as methods for validating the request and formatting the response.The function should be closed by calling `itrap.formatResponse(code, reason, data)`
+
+All routes must be defined in the `monkey_routes` dictionary as shown in the above example. The `scope` is optional. Schemas are not required, but must be defined to use the validation method.
+
+This module will be parsed and ingested when the iTRAP extension is re-initialized.
 ## Postman Spec
 In *`Documentation/Postman`* you can find a postman environment and collection. This contains every endpoint and supported method. They are configured to work with the `example.toe` project.
 

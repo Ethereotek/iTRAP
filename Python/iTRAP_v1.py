@@ -7,6 +7,7 @@ ttree = mod('ttree_builder')
 permissions = mod('Permissions')
 request_validation = mod('request_validation')
 butils = mod('butils')
+monkey = mod('monkey')
 
 permissions_config_dat = op('permissions_config')
 
@@ -14,12 +15,17 @@ permissions_config_dat = op('permissions_config')
 class ITRAP():
 	routing_table = {}
 	routing_tree = ttree.Trie()
+	
 
 	def __init__(self, thisComp):
+		print("Init iTRAP")
 		self.thisComp = thisComp
 		self.itrap_port = thisComp.par.Port
 		self.ip_address = thisComp.par.Ipaddress
 		self.secure = thisComp.par.Secure
+
+		self.schemas = schemas
+		self.validateParams = request_validation.validateParametersDict
 
 		if not self.thisComp.storage.get('Permissions'):
 			self.thisComp.store('Permissions', {'keys': {}, 'users': {}})
@@ -87,13 +93,17 @@ class ITRAP():
 			handlers = val.get('handlers')
 			scope = val.get('scope')
 			self.routing_tree.insert(key, handlers, scope)
-		'''
-			# Monkey Business
-		for key, val in self.monkey_tree.items():
-			handlers = val.get('handlers')
-			scope = val.get('scope')
-			self.routing_tree.insert(key, handlers, scope)		
-		'''
+
+		if monkey.monkey_routes:
+			for key,val in monkey.monkey_routes.items():
+				handlers = val.get('handlers')
+				scope = val.get('scope')
+
+				route = '/api/monkey/' + key
+				self.routing_tree.insert(route, handlers, scope)
+		if monkey.monkey_schemas:
+			for schema in monkey.monkey_schemas:
+				schemas.update(schema)
 # --------------------------------------------------------------#
 # --------------------------------------------------------------#
 # --------------------------------------------------------------#
@@ -136,7 +146,6 @@ class ITRAP():
 
 		self.response['content-type'] = 'application/json'
 		self.rel_prefix = f'http://{self.ip_address}:{self.itrap_port}/'
-
 		node, params = self.routing_tree.find(uri)
 		if not node:
 			self.formatResponse(404, 'Resource Not Found', {})
@@ -145,12 +154,15 @@ class ITRAP():
 		handler = node.handlers.get(method)
 		scope = node.scope
 		
-		'''	
-			# Monkey Business	
+			###################	
+			# Monkey Business #
+			###################	
+		print(uri.split('/'))
 		if uri.split('/')[2] == 'monkey':
+			print("yes to uri")
 			handler(self)
 			return self.response
-		'''
+		
 
 		if not handler:
 			allow = ','.join(node.handlers.keys())
@@ -191,7 +203,7 @@ class ITRAP():
 		self.response['statusReason'] = 'Internal Server Error'
 		self.response['data'] = data
 
-	def formatResponse(self, code, reason, data={}):
+	def formatResponse(self, code:int, reason:str, data:dict={}):
 		try:
 			data = json.dumps(data)
 		except Exception as e:
